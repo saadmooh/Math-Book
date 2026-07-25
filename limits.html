@@ -1,0 +1,2326 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مختبر النهايات | Limits Laboratory</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #0a1e3f;
+    --navy-soft: #1a3258;
+    --navy-deep: #050f24;
+    --paper: #f3ecdb;
+    --paper-warm: #faf5e6;
+    --paper-cool: #ece4cf;
+    --orange: #d94f1e;
+    --orange-soft: #ec8051;
+    --orange-bright: #ff6b35;
+    --green: #1f6b4c;
+    --green-soft: #3d9c75;
+    --green-bright: #2d8a5f;
+    --ink: #0a1e3f;
+    --ink-soft: #4a5a78;
+    --grid-fine: rgba(10, 30, 63, 0.07);
+    --grid-bold: rgba(10, 30, 63, 0.18);
+    --grid-axis: rgba(10, 30, 63, 0.55);
+    --warning: #c0392b;
+    --purple: #6d28d9;
+    --purple-soft: #a78bfa;
+    --blue: #2563eb;
+    --blue-soft: #60a5fa;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Amiri', serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .font-display { font-family: 'Readex Pro', sans-serif; }
+  .font-serif { font-family: 'Amiri', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  .paper-bg {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(217, 79, 30, 0.05) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 80%, rgba(31, 107, 76, 0.05) 0%, transparent 45%),
+      linear-gradient(to right, rgba(10, 30, 63, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 30, 63, 0.025) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+  }
+
+  .graph-paper-bg {
+    background-color: var(--paper-warm);
+  }
+
+  .top-band { background: var(--navy); color: var(--paper-warm); border-bottom: 3px solid var(--orange); }
+  .top-band-grid {
+    background-image:
+      linear-gradient(to right, rgba(243, 236, 219, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(243, 236, 219, 0.06) 1px, transparent 1px),
+      linear-gradient(to right, rgba(243, 236, 219, 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(243, 236, 219, 0.12) 1px, transparent 1px);
+    background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+  }
+
+  h1.title { font-family: 'Readex Pro', sans-serif; font-weight: 800; font-size: clamp(2.8rem, 6vw, 5.2rem); line-height: 1; letter-spacing: -0.02em; color: var(--paper-warm); margin: 0; }
+  h1.title .accent { color: var(--orange-bright); font-style: italic; font-weight: 300; }
+
+  .meta-text { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(243, 236, 219, 0.65); }
+  h2.section-title { font-family: 'Readex Pro', sans-serif; font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; letter-spacing: -0.01em; color: var(--navy); margin: 0 0 0.6em 0; scroll-margin-top: 20px; }
+  h2.section-title .num { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 500; color: var(--orange); letter-spacing: 0.1em; display: block; margin-bottom: 0.4em; }
+
+  h3.card-title { font-family: 'Readex Pro', sans-serif; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); margin: 0 0 1rem 0; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(10, 30, 63, 0.15); display: flex; align-items: center; justify-content: space-between; }
+  h3.card-title .dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; }
+
+  .card { background: var(--paper-warm); border: 1px solid rgba(10, 30, 63, 0.14); border-radius: 2px; position: relative; }
+  .card-navy { background: var(--navy); color: var(--paper-warm); border: 1px solid var(--navy-deep); }
+  .card-corner::before, .card-corner::after { content: ''; position: absolute; width: 12px; height: 12px; border: 1.5px solid var(--orange); }
+  .card-corner::before { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .card-corner::after { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+
+  .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; padding: 8px 14px; background: var(--paper-warm); color: var(--navy); border: 1px solid rgba(10, 30, 63, 0.3); cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
+  .chip:hover { border-color: var(--orange); color: var(--orange); }
+  .chip.active { background: var(--orange); border-color: var(--orange); color: var(--paper-warm); }
+  .chip-purple.active { background: var(--purple); border-color: var(--purple); }
+  .chip-green.active { background: var(--green); border-color: var(--green); }
+  .chip-blue.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+  .dir-btn { font-family: 'Readex Pro', sans-serif; font-size: 0.85rem; padding: 8px 14px; background: transparent; color: var(--ink-soft); border: 1px solid rgba(10, 30, 63, 0.2); cursor: pointer; transition: all 0.2s ease; }
+  .dir-btn.active { background: var(--green); color: var(--paper-warm); border-color: var(--green); }
+  .dir-btn.warning { background: var(--warning); color: var(--paper-warm); border-color: var(--warning); }
+
+  .btn-action { font-family: 'Readex Pro', sans-serif; font-weight: 600; font-size: 0.95rem; padding: 12px 26px; border: none; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.02em; justify-content: center; }
+  .btn-primary { background: var(--orange); color: var(--paper-warm); }
+  .btn-primary:hover { background: var(--navy); }
+  .btn-primary:disabled { background: rgba(10, 30, 63, 0.2); color: rgba(243, 236, 219, 0.5); cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
+  .btn-secondary:hover { background: var(--navy); color: var(--paper-warm); }
+  .btn-ghost { background: transparent; color: var(--navy); border: 1px solid rgba(10, 30, 63, 0.3); }
+  .btn-ghost:hover { border-color: var(--navy); background: rgba(10, 30, 63, 0.05); }
+  .btn-blue { background: var(--blue); color: white; }
+  .btn-blue:hover { background: var(--navy); }
+
+  .info-row { display: flex; align-items: baseline; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(10, 30, 63, 0.12); }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { font-family: 'Readex Pro', sans-serif; font-size: 0.85rem; color: var(--ink-soft); font-weight: 500; }
+  .info-value { font-family: 'JetBrains Mono', monospace; font-size: 1.15rem; font-weight: 500; color: var(--navy); transition: color 0.3s; }
+  .info-value.flash { color: var(--orange); }
+
+  .limit-display { background: var(--navy); color: var(--paper-warm); padding: 20px 24px; text-align: center; position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: center; }
+  .limit-display::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(243, 236, 219, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(243, 236, 219, 0.04) 1px, transparent 1px); background-size: 12px 12px; }
+  .limit-display .katex { color: var(--paper-warm); font-size: 1.2em; position: relative; }
+  .limit-display .verdict { font-family: 'Readex Pro', sans-serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green-soft); margin-top: 12px; position: relative; }
+  .limit-display .verdict .indicator { display: inline-block; width: 6px; height: 6px; background: var(--green-soft); border-radius: 50%; margin-inline-start: 8px; animation: pulse 1.6s ease-in-out infinite; }
+  
+  .indeterminate-alert .katex { color: var(--orange-bright); }
+  .indeterminate-alert .verdict { color: var(--orange-bright); }
+  .indeterminate-alert .verdict .indicator { background: var(--orange-bright); }
+
+  @keyframes pulse { 0%, 100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } }
+
+  .values-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+  .values-table thead th { font-family: 'Readex Pro', sans-serif; font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); padding: 8px 6px; text-align: right; border-bottom: 1.5px solid var(--navy); background: var(--paper-cool); }
+  .values-table tbody td { padding: 6px; border-bottom: 1px dashed rgba(10, 30, 63, 0.1); color: var(--navy); }
+  .values-table tbody tr.latest td { background: rgba(217, 79, 30, 0.08); color: var(--orange); font-weight: 700; }
+  .table-scroll { max-height: 280px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--navy) transparent; }
+  .table-scroll::-webkit-scrollbar { width: 6px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: var(--navy); }
+
+  .graph-svg { width: 100%; height: auto; display: block; cursor: grab; user-select: none; touch-action: none; }
+  .graph-svg:active { cursor: grabbing; }
+  .graph-svg:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  /* زر الإعدادات في زاوية مساحة الرسم */
+  .graph-settings-btn { position: absolute; top: 12px; left: 12px; z-index: 10; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: rgba(250, 245, 230, 0.92); color: var(--navy); border: 1px solid rgba(10, 30, 63, 0.25); border-radius: 4px; cursor: pointer; font-size: 19px; line-height: 1; transition: all 0.25s ease; box-shadow: 0 1px 4px rgba(10, 30, 63, 0.15); }
+  .graph-settings-btn:hover { border-color: var(--orange); color: var(--orange); transform: rotate(45deg); }
+  .graph-settings-btn.active { background: var(--navy); color: var(--paper-warm); border-color: var(--navy); transform: rotate(90deg); }
+  .graph-settings-btn::after { content: ''; position: absolute; inset: -4px; border: 2px solid var(--orange); border-radius: 6px; opacity: 0; pointer-events: none; animation: gearHint 2.2s ease-out 3; }
+  .graph-settings-btn.active::after, .graph-settings-btn:hover::after { animation: none; opacity: 0; }
+  @keyframes gearHint { 0% { opacity: 0.85; transform: scale(0.9); } 100% { opacity: 0; transform: scale(1.35); } }
+
+  /* أدوات التحكم مخفية افتراضياً */
+  .controls-hidden { display: none !important; }
+  .grid-minor { stroke: var(--grid-fine); stroke-width: 0.5; }
+  .grid-major { stroke: var(--grid-bold); stroke-width: 0.8; }
+  .axis-line { stroke: var(--grid-axis); stroke-width: 1.5; }
+  .axis-tick { stroke: var(--grid-axis); stroke-width: 1; }
+  .axis-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--ink-soft); }
+  .axis-title { font-family: 'Readex Pro', sans-serif; font-size: 14px; font-weight: 600; fill: var(--navy); }
+
+  .function-curve { fill: none; stroke: #111 !important; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  
+  .clickable-svg { cursor: pointer; transition: stroke-width 0.2s, opacity 0.2s, filter 0.2s; }
+  .clickable-svg:hover { stroke-width: 3 !important; opacity: 1 !important; }
+
+  .bounds-curve { fill: none; stroke-width: 2; stroke-dasharray: 6 4; opacity: 0.8; cursor: pointer; }
+  .bound-upper { stroke: var(--green); }
+  .bound-lower { stroke: var(--orange-soft); }
+  .component-curve { fill: none; stroke-width: 2; stroke-dasharray: 4 4; opacity: 0.6; }
+  .u-curve { stroke: var(--purple); }
+  .v-curve { stroke: var(--orange-soft); }
+  
+  .asymptote-line { stroke: var(--orange); stroke-width: 1.2; stroke-dasharray: 6 5; opacity: 0.6; }
+  .hole-circle { fill: var(--paper-warm); stroke: var(--navy); stroke-width: 2; }
+  .hole-ring { fill: none; stroke: var(--orange); stroke-width: 1.5; stroke-dasharray: 3 3; opacity: 0.85; }
+  .hole-label { font-family: 'Readex Pro', sans-serif; font-size: 12px; font-weight: 700; fill: var(--orange); }
+  .guide-line { stroke: var(--green); stroke-width: 1.2; stroke-dasharray: 4 4; opacity: 0.7; }
+  .trail-dot { fill: var(--orange); opacity: 0.5; }
+  .approach-point-handle { fill: var(--green); stroke: var(--paper-warm); stroke-width: 2.5; cursor: ew-resize; filter: drop-shadow(0 2px 4px rgba(31, 107, 76, 0.3)); }
+  .approach-point-handle:hover { fill: var(--green-bright); }
+  .approach-label { font-family: 'Readex Pro', sans-serif; font-size: 13px; font-weight: 700; fill: var(--green); }
+
+  .point-p { fill: var(--orange); stroke: var(--paper-warm); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(217, 79, 30, 0.4)); }
+  .point-p-pulse { fill: none; stroke: var(--orange); stroke-width: 1.5; opacity: 0; transform-origin: center; }
+  .point-p-pulse.active { animation: pulseRing 1.2s ease-out; }
+  @keyframes pulseRing { 0% { opacity: 0.8; r: 8; } 100% { opacity: 0; r: 22; } }
+  .point-p-label { font-family: 'Readex Pro', sans-serif; font-size: 13px; font-weight: 700; fill: var(--orange); }
+
+  .tangent-line-svg { stroke: var(--blue); stroke-width: 2.5; stroke-dasharray: 6 4; opacity: 0.9; }
+  .eps-band { fill: rgba(37, 99, 235, 0.1); stroke: var(--blue); stroke-width: 1; stroke-dasharray: 3 3; }
+  .delta-band { fill: rgba(217, 79, 30, 0.1); stroke: var(--orange); stroke-width: 1; stroke-dasharray: 3 3; }
+  .eps-delta-status { font-family: 'Readex Pro', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 8px 12px; border-radius: 4px; text-align: center; margin-top: 10px; }
+  .eps-delta-status.success { background: rgba(31, 107, 76, 0.15); color: var(--green); border: 1px solid var(--green); }
+  .eps-delta-status.fail { background: rgba(192, 57, 43, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+
+  input[type="range"].speed-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: rgba(10, 30, 63, 0.2); outline: none; border-radius: 2px; }
+  input[type="range"].speed-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: var(--orange); cursor: pointer; border-radius: 50%; border: 2px solid var(--paper-warm); box-shadow: 0 1px 4px rgba(10, 30, 63, 0.3); }
+  input[type="range"].speed-slider::-moz-range-thumb { width: 18px; height: 18px; background: var(--orange); cursor: pointer; border-radius: 50%; border: 2px solid var(--paper-warm); }
+  input[type="range"].blue-slider::-webkit-slider-thumb { background: var(--blue); }
+  input[type="range"].blue-slider::-moz-range-thumb { background: var(--blue); }
+
+  .prose-section { background: var(--paper-warm); border-top: 1px solid rgba(10, 30, 63, 0.15); border-bottom: 1px solid rgba(10, 30, 63, 0.15); padding: 2rem 1rem; }
+  .prose-section .lead::first-letter { font-family: 'Readex Pro', sans-serif; font-weight: 800; font-size: 4.2em; float: right; line-height: 0.85; margin-left: 0.08em; margin-top: 0.05em; color: var(--orange); }
+
+  footer { background: var(--navy-deep); color: rgba(243, 236, 219, 0.7); padding: 32px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.05em; text-align: center; }
+
+  .editorial-rule { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
+  .editorial-rule::before, .editorial-rule::after { content: ''; flex: 1; height: 1px; background: rgba(10, 30, 63, 0.2); }
+  .editorial-rule .symbol { font-family: 'Readex Pro', sans-serif; color: var(--orange); font-weight: 700; }
+
+  .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .status-pill.running { background: rgba(217, 79, 30, 0.12); color: var(--orange); }
+  .status-pill.idle { background: rgba(10, 30, 63, 0.06); color: var(--ink-soft); }
+  .status-pill .pip { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .status-pill.running .pip { animation: pulse 1.2s ease-in-out infinite; }
+
+  .approach-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--paper-cool); border: 1px solid rgba(10, 30, 63, 0.15); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+  .approach-badge .label { color: var(--ink-soft); font-size: 0.75rem; }
+  .approach-badge .value { color: var(--green); font-weight: 700; }
+
+  .math-badge { display: inline-block; padding: 4px 10px; background: rgba(10, 30, 63, 0.06); border: 1px solid rgba(10, 30, 63, 0.1); border-radius: 2px; font-size: 0.9em; }
+  .stage-badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 2px 8px; background: var(--green); color: var(--paper-warm); margin-bottom: 0.5rem; border-radius: 2px; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(5, 15, 36, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 20px; }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal-card { background: var(--paper-warm); max-width: 600px; width: 100%; padding: 40px; border: 1px solid var(--navy); box-shadow: 0 20px 60px rgba(0,0,0,0.4); position: relative; transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; }
+  .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+  .modal-close { position: absolute; top: 15px; left: 15px; background: transparent; border: none; font-size: 28px; color: var(--ink-soft); cursor: pointer; line-height: 1; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s; }
+  .modal-close:hover { background: rgba(10, 30, 63, 0.1); color: var(--navy); }
+  .modal-badge { display: inline-block; padding: 4px 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; margin-bottom: 16px; }
+  .modal-badge.orange { background: rgba(217, 79, 30, 0.15); color: var(--orange); border: 1px solid var(--orange); }
+  .modal-badge.green { background: rgba(31, 107, 76, 0.15); color: var(--green); border: 1px solid var(--green); }
+
+  @media (max-width: 640px) {
+    .chip, .dir-btn, .btn-action { min-height: 44px; padding: 10px 16px; font-size: 0.95rem; }
+    .approach-point-handle { r: 13; }
+    .speed-slider::-webkit-slider-thumb, .speed-slider::-moz-range-thumb { width: 26px; height: 26px; }
+    .card { padding: 1rem !important; }
+    .flex.flex-wrap.gap-2 { gap: 10px; }
+    h3.card-title { font-size: 0.85rem; }
+    .limit-display { padding: 16px; min-height: 100px; }
+    .graph-settings-btn { width: 44px; height: 44px; font-size: 22px; }
+  }
+</style>
+</head>
+<body class="paper-bg">
+
+<div class="top-band top-band-grid">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="meta-text">Vol. 02 · Advanced Calculus · Interactive Lab</div>
+    <div class="meta-text">مختبر · تفاعلي · رياضيات</div>
+  </div>
+</div>
+
+<header class="bg-[var(--navy)] text-[var(--paper-warm)] relative overflow-hidden">
+  <div class="absolute inset-0 top-band-grid opacity-40"></div>
+  <div class="absolute -left-32 -top-32 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(217,79,30,0.15) 0%, transparent 70%);"></div>
+  <div class="absolute -right-32 -bottom-32 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(31,107,76,0.15) 0%, transparent 70%);"></div>
+
+  <div class="max-w-4xl mx-auto px-6 py-12 md:py-16 relative text-center">
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <span class="meta-text" style="color: var(--orange-bright);">— الفصل المتقدم</span>
+      <div class="h-px flex-1 max-w-[80px]" style="background: rgba(243,236,219,0.3);"></div>
+      <span class="meta-text">Limits · النهايات والقيود</span>
+    </div>
+    <h1 class="title">مختبر <span class="accent">النهايات</span></h1>
+    <p class="font-serif text-lg md:text-xl mt-6 max-w-2xl mx-auto leading-relaxed" style="color: rgba(243, 236, 219, 0.85);">
+      استكشف العمليات على النهايات، حالات عدم التعيين، ومبرهنات الحصر والمقارنة.
+      <br>
+      <span style="color: var(--green-soft); font-size: 0.9rem;">مرر للأسفل لاكتشاف القدرات تدريجياً مع كل درس جديد.</span>
+    </p>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 py-8">
+
+  <section class="prose-section">
+    <h2 class="section-title" id="topic-1">
+      <span class="num">المقال · 01</span>نهاية عند المالانهاية
+    </h2>
+    <p class="lead font-serif text-lg leading-loose">
+      النهاية ليست قيمةً نحسبها بطريقة آلية، بل هي وصفٌ دقيقٌ لسلوك الدالة. عندما تتجه $x$ إلى $+\infty$ أو $-\infty$، فإننا ندرس "السلوك النهائي" للدالة. أحياناً نصطدم بأشكال بدئية لا تحمل معنى رياضياً مباشرة، تُسمى <strong>حالات عدم التعيين</strong>.
+    </p>
+    <div class="card p-6 border-r-4 mt-6" style="border-right-color: var(--orange);">
+      <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">1. حالات عدم التعيين الأربع</h3>
+      <ul class="space-y-3 font-serif text-base">
+        <li><span class="math-badge">$\frac{0}{0}$</span> تتطلب الاختزال أو الضرب بالمقترن.</li>
+        <li><span class="math-badge">$\frac{\infty}{\infty}$</span> نطبق قاعدة الحد الأعلى درجة.</li>
+        <li><span class="math-badge">$+\infty - \infty$</span> تتطلب التوحيد في الكتابة ثم الاختزال.</li>
+        <li><span class="math-badge">$0 \times \infty$</span> نحوّلها إلى كسر لتصبح $\frac{0}{0}$ أو $\frac{\infty}{\infty}$.</li>
+      </ul>
+    </div>
+    <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
+  </section>
+
+  <div id="lab-container-1" class="my-12"></div>
+
+  <section class="prose-section">
+    <h2 class="section-title" id="topic-2">
+      <span class="num">المقال · 02</span>نهاية عند عدد حقيقي
+    </h2>
+    <div class="space-y-6 my-6 font-serif text-lg leading-loose">
+      <p>عندما تؤول $x$ إلى عدد حقيقي $a$، قد تكون الدالة معرفة عند $a$ أو غير معرفة. المهم هو سلوكها "بالقرب" من $a$. إذا ظهرت صيغة $\frac{0}{0}$، فإننا نواجه ثقباً (Hole) يمكن اختزاله، وإذا ظهرت $\frac{k}{0}$ فإننا نواجه مقارباً عمودياً (Asymptote).</p>
+      <div class="card p-6 border-r-4" style="border-right-color: var(--green);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">2. دالة ناطقة (كسرية)</h3>
+        <p class="text-sm text-[var(--ink-soft)] mb-3">نهاية دالة ناطقة عند $a$ تتطلب فحص البسط والمقام. إذا كانا صفرين معاً، نختزل العامل المشترك $(x-a)$.</p>
+        <div class="bg-[var(--paper-cool)] p-3 font-mono text-center text-sm rounded border border-[rgba(10,30,63,0.1)]">
+          $$\lim_{x \to a} \frac{P(x)}{Q(x)} = L \quad \text{إذا } P(a)=0, Q(a)=0$$         </div>
+      </div>
+      <p>في هذه المرحلة، يمكنك تحريك النقطة الخضراء $a$ على المحور الأفقي لتختبر السلوك اللحظي، واستخدام خاصية التكبير لرؤية الثقوب والمقاربات العمودية بوضوح.</p>
+    </div>
+    <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
+  </section>
+
+  <div id="lab-container-2" class="my-12"></div>
+
+  <section class="prose-section">
+    <h2 class="section-title" id="topic-3">
+      <span class="num">المقال · 03</span>التعريف الدقيق: إبسلون ودلتا ($\epsilon-\delta$)
+    </h2>
+    <div class="space-y-6 my-6 font-serif text-lg leading-loose">
+      <p>التعريف البصري للنهاية ممتاز للبداية، لكن الرياضيات المتقدمة تتطلب دقة صارمة. التعريف الرسمي للنهاية يقول: 
+      لكي تكون $\lim_{x \to a} f(x) = L$، يجب أن نتمكن من جعل $f(x)$ قريباً جداً من $L$ (بمسافة أقل من $\epsilon$)، بمجرد أن نجبر $x$ على الاقتراب من $a$ (بمسافة أقل من $\delta$).</p>
+      <div class="card p-6 border-r-4" style="border-right-color: var(--blue);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">صياغة التعريف</h3>
+        <div class="bg-[var(--paper-cool)] p-3 font-mono text-center text-sm rounded border border-[rgba(10,30,63,0.1)]">
+          $$\forall \epsilon > 0, \exists \delta > 0 : 0 < |x - a| < \delta \implies |f(x) - L| < \epsilon$$         </div>
+        <p class="mt-4 text-sm text-[var(--ink-soft)]">في المختبر أدناه، أنت تتحكم في قيمة $\epsilon$ (الشريط الأزرق حول $L$). سيقوم المختبر تلقائياً بحساب أقصى قيمة لـ $\delta$ (الشريط البرتقالي حول $a$) تضمن بقاء المنحنى أسير الشريط الأزرق.</p>
+      </div>
+    </div>
+    <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
+  </section>
+
+  <div id="lab-container-3" class="my-12"></div>
+
+  <section class="prose-section">
+    <h2 class="section-title" id="topic-4">
+      <span class="num">المقال · 04</span>الدوال المركبة ومبدأ الحصر
+    </h2>
+    <p class="font-serif text-lg leading-loose mb-6">إذا كانت $f = v \circ u$ (أي $f(x) = v(u(x))$)، ولدينا:<br>
+    $\lim_{x \to a} u(x) = b$ و $\lim_{X \to b} v(X) = c$، فإن النهاية تُحسب على مرحلتين:</p>
+    <div class="card card-navy p-6 text-center mb-8">
+      <div class="font-mono text-lg mb-2" style="color: var(--orange-bright);">$$\lim_{x \to a} v(u(x)) = \lim_{X \to b} v(X) = c$$</div>
+      <p class="text-sm opacity-80">حيث $X$ وسيط يمثل قيمة $u(x)$ كلما اقترب $x$ من $a$.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mt-8">
+      <div class="card p-6">
+        <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">مبرهنة الحصر (Sandwich Theorem)</h3>
+        <p class="font-serif text-base leading-relaxed mb-4">إذا تحقق $g(x) \le f(x) \le h(x)$ قرب النقطة $a$، وكانت الدالتان الحاشرتان لهما نفس النهاية:</p>
+        <div class="bg-[var(--paper-cool)] p-3 rounded text-center border border-[rgba(10,30,63,0.1)]">
+           $$\lim_{x \to a} g(x) = \lim_{x \to a} h(x) = L$$         </div>
+        <p class="mt-4 text-center font-bold text-[var(--green)]">فإن $\lim_{x \to a} f(x) = L$ بالضرورة.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">مبرهنات المقارنة</h3>
+        <p class="font-serif text-base leading-relaxed">إذا كانت $f(x) \ge g(x)$ قرب $a$:</p>
+        <ul class="mt-3 space-y-3 font-serif text-base">
+          <li class="flex items-start gap-2">
+              <span class="text-[var(--orange)] font-bold mt-1">↗</span> 
+              <span>إذا كانت $\lim g(x) = +\infty$، فإن $\lim f(x) = +\infty$ (التكبير).</span>
+          </li>
+          <li class="flex items-start gap-2">
+              <span class="text-[var(--green)] font-bold mt-1">↘</span> 
+              <span>إذا كانت $\lim f(x) = -\infty$، فإن $\lim g(x) = -\infty$ (التصغير).</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="editorial-rule mt-12"><span class="symbol">∞</span></div>
+  </section>
+
+  <div id="lab-container-4" class="my-12"></div>
+
+  <section class="prose-section">
+    <h2 class="section-title" id="topic-5">
+      <span class="num">المقال · 05</span>الاتصال عند نقطة
+    </h2>
+    <p class="font-serif text-lg leading-loose">الدالة $f$ متصلة عند $a$ إذا وفقط إذا $\lim_{x\to a} f(x) = f(a)$.</p>
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <div class="card p-5 border-r-4" style="border-right-color: var(--green);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">1. متصلة</h3>
+        <p class="font-serif text-sm">النهاية موجودة وتساوي قيمة الدالة عند النقطة.</p>
+      </div>
+      <div class="card p-5 border-r-4" style="border-right-color: var(--orange);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">2. ثقب قابل للإزالة</h3>
+        <p class="font-serif text-sm">النهاية موجودة لكنها لا تساوي قيمة الدالة (أو غير معرّفة).</p>
+      </div>
+      <div class="card p-5 border-r-4" style="border-right-color: var(--purple);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">3. قفزة</h3>
+        <p class="font-serif text-sm">النهايتان اليسرى واليمنى مختلفتان، فالنهاية الكلية غير موجودة.</p>
+      </div>
+      <div class="card p-5 border-r-4" style="border-right-color: var(--warning);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">4. مقارب عمودي</h3>
+        <p class="font-serif text-sm">الدالة تتجه إلى ∞ أو -∞، فالنهاية غير موجودة.</p>
+      </div>
+    </div>
+    <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
+  </section>
+  <div id="lab-container-5" class="my-12"></div>
+
+</main>
+
+<footer>
+  <div class="max-w-7xl mx-auto px-6">
+    <div>مختبر النهايات التفاعلي · تطوير المفهوم الهندسي والتحليلي للدوال</div>
+  </div>
+</footer>
+
+<div id="info-modal" class="modal-overlay">
+  <div class="modal-card card-corner">
+    <button id="modal-close" class="modal-close">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== Global Math Functions Presets =====
+  const functions = {
+    stage1: {
+      label: 'f(x) = (2x+1)/(x-3)',
+      displayLatex: 'f(x) = \\frac{2x+1}{x-3}',
+      fn: x => (Math.abs(x - 3) < 1e-12) ? NaN : (2*x + 1) / (x - 3),
+      dfn: x => (Math.abs(x - 3) < 1e-12) ? NaN : (2*(x-3) - (2*x+1)) / Math.pow(x-3, 2),
+      defaultApproach: 0,
+      defaultX: 8,
+      hole: null,
+      limit: 2,
+      limitType: 'finite',
+      asymptotes: [
+        { x: 3, type: 'vertical', explanation: 'x = 3 يُلغي المقام دون إلغاء البسط، لذا هو مقارب عمودي.' },
+        { y: 2, type: 'horizontal', explanation: 'عندما يكبر |x|، نقسم على x فنجد أن النهاية تقترب من 2/1 = 2.' }
+      ],
+      explanation: 'دالة ناطقة. عند x → ±∞ نأخذ حاصل قسمة الحدين الأعلى درجة.',
+      solveMethod: '$$\\lim_{x \\to \\pm\\infty} \\frac{2x+1}{x-3} = \\lim_{x \\to \\pm\\infty} \\frac{2x}{x} = 2$$'
+    },
+    stage2: {
+      label: 'f(x) = (x³−8)/(x−2)',
+      displayLatex: 'f(x) = \\frac{x^3-8}{x-2}',
+      fn: x => (Math.abs(x - 2) < 1e-12) ? NaN : (x*x*x - 8) / (x - 2),
+      dfn: x => (Math.abs(x - 2) < 1e-12) ? NaN : 3*x*x,
+      defaultApproach: 2,
+      defaultX: 3,
+      hole: { x: 2, y: 12 },
+      limit: 12,
+      limitType: 'finite',
+      asymptotes: [],
+      indeterminate: "0/0",
+      solveHint: "اختزال العامل المشترك (x-2) أو تطبيق قاعدة لوبيتال",
+      explanation: 'دالة ناطقة. عند x = 2 يصبح البسط والمقام صفرين (صيغة 0/0).',
+      solveMethod: 'نختزل العامل المشترك (x-2):<br>$$f(x) = \\frac{(x-2)(x^2+2x+4)}{x-2} = x^2+2x+4 \\quad (x \\neq 2)$$<br>نعوض x = 2:<br>$$\\lim_{x \\to 2} (x^2+2x+4) = 12$$',
+      lhopital: {
+        displayLatex: "\\frac{f'(x)}{g'(x)} = \\frac{3x^2}{1} = 3x^2",
+        fn: x => 3*x*x,
+        limit: 12,
+        explanation: 'بتطبيق قاعدة لوبيتال: نشتق البسط (x³-8) ليصبح 3x²، ونشتق المقام (x-2) ليصبح 1. المنحنى يتحول أمامه ليصبح 3x².'
+      }
+    }
+  };
+
+  // ===== Epsilon-Delta Presets =====
+  const eps_presets = [
+    {
+      id: 'eps_lin', label: 'f(x) = 2x + 1 عند x=3',
+      fn: x => 2*x + 1,
+      dfn: x => 2,
+      a: 3, L: 7,
+      calcDelta: (eps) => eps / 2
+    },
+    {
+      id: 'eps_sq', label: 'f(x) = x² عند x=3',
+      fn: x => x*x,
+      dfn: x => 2*x,
+      a: 3, L: 9,
+      calcDelta: (eps) => Math.min(3 - Math.sqrt(Math.max(0, 9 - eps)), Math.sqrt(9 + eps) - 3)
+    }
+  ];
+
+  // ===== Composite Functions Definitions =====
+  const u_options = [
+    { id: 'u_x', label: 'u(x) = x', fn: x => x, latex: 'x', defaultA: 1 },
+    { id: 'u_inv_x', label: 'u(x) = 1/x', fn: x => (Math.abs(x) < 1e-12) ? NaN : 1/x, latex: '\\frac{1}{x}', defaultA: 0 },
+    { id: 'u_sin', label: 'u(x) = sin(x)', fn: x => Math.sin(x), latex: '\\sin(x)', defaultA: 0 },
+    { id: 'u_x_minus_1', label: 'u(x) = x-1', fn: x => x - 1, latex: 'x - 1', defaultA: 1 }
+  ];
+
+  const v_options = [
+    { id: 'v_sqrt', label: 'v(X) = √X', fn: X => (X < 0) ? NaN : Math.sqrt(X), latex: '\\sqrt{X}', limitInf: '\\infty' },
+    { id: 'v_inv', label: 'v(X) = 1/X', fn: X => (Math.abs(X) < 1e-12) ? NaN : 1/X, latex: '\\frac{1}{X}', limitInf: '0' },
+    { id: 'v_sin', label: 'v(X) = sin(X)', fn: X => Math.sin(X), latex: '\\sin(X)', limitInf: '\\text{غير موجود}' },
+    { id: 'v_sq', label: 'v(X) = X²', fn: X => X * X, latex: 'X^2', limitInf: '\\infty' }
+  ];
+
+  // ===== Sandwich & Comparison Presets =====
+  const sandwich_presets = [
+    {
+      id: 'sq_1', label: 'حصر: x sin(1/x) عند 0',
+      latex: 'f(x) = x \\sin\\left(\\frac{1}{x}\\right)',
+      fn: x => (Math.abs(x) < 1e-12) ? NaN : x * Math.sin(1/x),
+      limit: 0, limitType: 'finite', isInfinity: false, defaultApproach: 0, defaultX: 0.5,
+      bounds: [
+        { label: 'h(x) = x', latex: 'h(x) = x', fn: x => x, type: 'upper', explanation: 'الحد الأعلى. لأن $\\sin(1/x) \\le 1$ دائماً، فإن $x \\sin(1/x) \\le x$ عندما $x>0$.' },
+        { label: 'g(x) = -x', latex: 'g(x) = -x', fn: x => -x, type: 'lower', explanation: 'الحد الأدنى. لأن $\\sin(1/x) \\ge -1$، فإن $x \\sin(1/x) \\ge -x$.' }
+      ],
+      explanation: 'دالة تتذبذب بلا توقف قرب الصفر، لكن سعة التذبذب تتناقص.',
+      solveMethod: 'بما أن $-1 \\le \\sin(1/x) \\le 1$، فإن $-x \\le x \\sin(1/x) \\le x$.<br>بما أن $\\lim_{x \\to 0} (-x) = 0$ و $\\lim_{x \\to 0} (x) = 0$، فإن $\\lim_{x \\to 0} x \\sin(1/x) = 0$.'
+    },
+    {
+      id: 'sq_2', label: 'حصر: x² sin(1/x) عند 0',
+      latex: 'f(x) = x^2 \\sin\\left(\\frac{1}{x}\\right)',
+      fn: x => (Math.abs(x) < 1e-12) ? NaN : x * x * Math.sin(1/x),
+      limit: 0, limitType: 'finite', isInfinity: false, defaultApproach: 0, defaultX: 0.5,
+      bounds: [
+        { label: 'h(x) = x²', latex: 'h(x) = x^2', fn: x => x*x, type: 'upper', explanation: 'الحد الأعلى.' },
+        { label: 'g(x) = -x²', latex: 'g(x) = -x^2', fn: x => -x*x, type: 'lower', explanation: 'الحد الأدنى.' }
+      ],
+      explanation: 'تتذبذب الدالة بقوة أكبر قرب الصفر لكن سعتها تضمحل بسرعة أكبر.',
+      solveMethod: 'بما أن $-1 \\le \\sin(1/x) \\le 1$، فإن $-x^2 \\le x^2 \\sin(1/x) \\le x^2$.<br>نهاية الحاصرين عند 0 هي 0، فتُجبر الدالة على التوجه إلى 0.'
+    },
+    {
+      id: 'cmp_1', label: 'مقارنة: (x²+sin x) و (x²) عند +∞',
+      latex: 'f(x) = x^2 + \\sin(x)',
+      fn: x => x*x + Math.sin(x),
+      limit: '\\infty', limitType: 'infinite', isInfinity: true, infinitySign: 1, defaultX: 10,
+      bounds: [
+        { label: 'g(x) = x² - 1', latex: 'g(x) = x^2 - 1', fn: x => x*x - 1, type: 'lower', explanation: 'دالة المقارنة السفلية. بما أن $\\sin(x) \\ge -1$، فإن $f(x) \\ge x^2 - 1$.' }
+      ],
+      explanation: 'دالة تضيف اضطراباً دورياً (sin) إلى دالة متجهة للانفجار (x²).',
+      solveMethod: 'لدينا $f(x) = x^2 + \\sin(x)$ و $g(x) = x^2 - 1$.<br>بما أن $\\sin(x) \\ge -1$، فإن $f(x) \\ge x^2 - 1 = g(x)$.<br>عندما $x \\to +\\infty$، فإن $g(x) \\to +\\infty$.<br>وبمبدأ المقارنة (التكبير)، فإن $\\lim_{x \\to +\\infty} f(x) = +\\infty$.'
+    }
+  ];
+
+  // ===== Indeterminate Forms Presets =====
+  const indeterminate_presets = [
+    { id: 'ind_default_stage2', stage: 2, label: functions.stage2.label, ref: 'stage2' },
+    { id: 'ind_default_stage1', stage: 1, label: functions.stage1.label, ref: 'stage1' },
+    {
+      id: 'ind_1inf', stage: 2, label: 'f(x) = (1+x)^{1/x}  (صيغة 1^∞)',
+      displayLatex: 'f(x) = (1+x)^{1/x}',
+      fn: x => Math.pow(1 + x, 1 / x),
+      originalFn: x => Math.pow(1 + x, 1 / x),
+      transformedFn: x => Math.log(1 + x) / x,
+      transformedLabel: '\\ln y = \\frac{\\ln(1+x)}{x}',
+      dfn: x => { const h = 1e-5; const v1 = Math.pow(1 + x + h, 1/(x + h)); const v2 = Math.pow(1 + x - h, 1/(x - h)); if (!isFinite(v1) || !isFinite(v2)) return NaN; return (v1 - v2) / (2 * h); },
+      defaultApproach: 0, limit: 'e \\approx 2.71828', limitType: 'finite',
+      indeterminate: '1^\\infty',
+      solveHint: 'خذ اللوغاريتم للطرفين، ثم استخدم النهاية المعروفة',
+      explanation: 'عندما x \\to 0، القاعدة (1+x) تقترب من 1 والأس 1/x يتجه إلى ∞، فنحصل على صيغة 1^∞. نأخذ اللوغاريتم الطبيعي للطرفين.',
+      solveMethod: '$$y = (1+x)^{1/x} \\implies \\ln y = \\frac{\\ln(1+x)}{x}$$<br>بما أن $\\lim_{x \\to 0} \\frac{\\ln(1+x)}{x} = 1$، فإن $\\ln y \\to 1$ وبالتالي $y \\to e^1 = e \\approx 2.71828$.'
+    },
+    {
+      id: 'ind_0pow0', stage: 2, label: 'f(x) = x^x  (صيغة 0^0)',
+      displayLatex: 'f(x) = x^x',
+      fn: x => Math.pow(x, x),
+      dfn: x => { const h = 1e-5; const v1 = Math.pow(x + h, x + h); const v2 = Math.pow(x - h, x - h); if (!isFinite(v1) || !isFinite(v2)) return NaN; return (v1 - v2) / (2 * h); },
+      defaultApproach: 0, forceDirection: 'right', limit: 1, limitType: 'finite',
+      indeterminate: '0^0',
+      solveHint: 'اكتب x^x = e^{x \\ln x} وحلل الأس',
+      explanation: 'عندما x \\to 0^+، القاعدة x تقترب من 0 والأس x يقترب من 0 أيضاً، فنحصل على صيغة 0^0.',
+      solveMethod: '$$x^x = e^{x \\ln x}$$<br>بما أن $\\lim_{x \\to 0^+} x \\ln x = 0$، فإن $\\lim_{x \\to 0^+} x^x = e^0 = 1$.'
+    },
+    {
+      id: 'ind_infpow0', stage: 2, label: 'f(x) = x^{1/x}  (صيغة ∞^0)',
+      displayLatex: 'f(x) = x^{1/x}',
+      fn: x => Math.pow(x, 1 / x),
+      dfn: x => { const h = 1e-5; const v1 = Math.pow(x + h, 1/(x + h)); const v2 = Math.pow(x - h, 1/(x - h)); if (!isFinite(v1) || !isFinite(v2)) return NaN; return (v1 - v2) / (2 * h); },
+      isInfinityDefault: true, defaultApproach: 0, limit: 1, limitType: 'finite',
+      indeterminate: '\\infty^0',
+      solveHint: 'استخدم اللوغاريتم: \\ln y = \\frac{\\ln x}{x}',
+      explanation: 'عندما x \\to +∞، القاعدة x تتجه إلى ∞ والأس 1/x يتجه إلى 0، فنحصل على صيغة ∞^0.',
+      solveMethod: '$$y = x^{1/x} \\implies \\ln y = \\frac{\\ln x}{x}$$<br>بما أن $\\lim_{x \\to +\\infty} \\frac{\\ln x}{x} = 0$، فإن $\\ln y \\to 0$ وبالتالي $y \\to e^0 = 1$.'
+    },
+    {
+      id: 'ind_0xinf', stage: 2, label: 'f(x) = x\\ln x  (صيغة 0×∞)',
+      displayLatex: 'f(x) = x \\ln x',
+      fn: x => x * Math.log(x),
+      dfn: x => Math.log(x) + 1,
+      defaultApproach: 0, forceDirection: 'right', limit: 0, limitType: 'finite',
+      indeterminate: '0 \\times \\infty',
+      solveHint: 'اكتب x\\ln x = \\frac{\\ln x}{1/x} وطبق قاعدة لوبيتال',
+      explanation: 'عندما x \\to 0^+، x تقترب من 0 و\\ln x يتجه إلى -∞، فنحصل على صيغة 0×∞.',
+      solveMethod: '$$x \\ln x = \\frac{\\ln x}{1/x}$$<br>بتطبيق قاعدة لوبيتال: $\\lim \\frac{1/x}{-1/x^2} = \\lim (-x) = 0$.'
+    },
+    {
+      id: 'ind_lhop_stage1', stage: 1, label: 'f(x) = \\frac{3x^2+2x}{x^2-1}  (∞/∞)',
+      displayLatex: 'f(x) = \\frac{3x^2+2x}{x^2-1}',
+      fn: x => (Math.abs(x*x - 1) < 1e-12) ? NaN : (3*x*x + 2*x) / (x*x - 1),
+      dfn: x => (Math.abs(x*x - 1) < 1e-12) ? NaN : ((6*x + 2)*(x*x - 1) - (3*x*x + 2*x)*(2*x)) / Math.pow(x*x - 1, 2),
+      defaultApproach: 0, isInfinityDefault: true, limit: 3, limitType: 'finite',
+      indeterminate: '\\frac{\\infty}{\\infty}', indeterminateAtInfinity: true,
+      solveHint: 'اقسم البسط والمقام على أعلى قوة من x أو طبق قاعدة لوبيتال',
+      explanation: 'دالة ناطقة: عندما x \\to \\infty، البسط والمقام من الدرجة الثانية، فنحصل على صيغة \\infty/\\infty.',
+      solveMethod: '$$\\lim_{x \\to \\infty} \\frac{3x^2+2x}{x^2-1} = \\lim_{x \\to \\infty} \\frac{3 + 2/x}{1 - 1/x^2} = 3$$',
+      lhopital: {
+        displayLatex: '\\frac{f\'(x)}{g\'(x)} = \\frac{6x+2}{2x}',
+        fn: x => (Math.abs(x) < 1e-12) ? NaN : (6*x + 2) / (2*x),
+        limit: 3,
+        explanation: 'بتطبيق قاعدة لوبيتال: نشتق البسط ليصبح 6x+2 والمقام ليصبح 2x، فتقتبل النهاية عند x \\to \\infty إلى 6/2 = 3.'
+      }
+    }
+  ];
+
+  // ===== Continuity Lab Presets =====
+  const continuity_presets = [
+    {
+      id: 'cont_ok', label: 'f(x) = x^2+1  (متصلة)', caseType: 'continuous',
+      displayLatex: 'f(x) = x^2 + 1',
+      fn: x => x*x + 1,
+      dfn: x => 2*x,
+      a: 2
+    },
+    {
+      id: 'cont_removable', label: 'ثقب قابل للإزالة عند x=2', caseType: 'removable',
+      displayLatex: 'f(x) = \\frac{x^2-4}{x-2}',
+      fn: x => Math.abs(x - 2) < 1e-12 ? 1 : (x*x - 4) / (x - 2),
+      dfn: x => Math.abs(x - 2) < 1e-12 ? NaN : 1,
+      a: 2, limitAtA: 4,
+      explanation: 'الدالة تساوي x+2 عند x≠2، لكنها معرّفة بقيمة مختلفة عند x=2.',
+      solveMethod: '$$\\lim_{x \\to 2} \\frac{x^2-4}{x-2} = \\lim_{x \\to 2} (x+2) = 4 \\neq f(2) = 1$$'
+    },
+    {
+      id: 'cont_jump', label: 'قفزة عند x=1', caseType: 'jump',
+      displayLatex: 'f(x) = \\begin{cases} x & x < 1 \\\\ x+2 & x \\ge 1 \\end{cases}',
+      fn: x => x < 1 ? x : x + 2,
+      dfn: x => 1,
+      a: 1,
+      explanation: 'النهاية اليسرى تساوي 1 والنهاية اليمنى تساوي 3، فالنهاية الكلية غير موجودة.',
+      solveMethod: '$$\\lim_{x \\to 1^-} f(x) = 1, \\quad \\lim_{x \\to 1^+} f(x) = 3$$'
+    },
+    {
+      id: 'cont_infinite', label: 'مقارب عمودي عند x=3', caseType: 'infinite',
+      displayLatex: 'f(x) = \\frac{1}{x-3}',
+      fn: x => (Math.abs(x - 3) < 1e-12) ? NaN : 1 / (x - 3),
+      dfn: x => (Math.abs(x - 3) < 1e-12) ? NaN : -1 / Math.pow(x - 3, 2),
+      a: 3,
+      asymptotes: [{ x: 3, type: 'vertical', explanation: 'x = 3 يُلغي المقام، لذا هو مقارب عمودي.' }],
+      explanation: 'عندما x \\to 3، المقام يقترب من 0 والدالة تتجه إلى ±∞.',
+      solveMethod: '$$\\lim_{x \\to 3^-} \\frac{1}{x-3} = -\\infty, \\quad \\lim_{x \\to 3^+} \\frac{1}{x-3} = +\\infty$$'
+    }
+  ];
+
+  // ===== Sequence Mode Presets =====
+  const sequence_presets = [
+    {
+      id: 'seq_1', label: 'u_n = (-1)^n / n',
+      latex: 'u_n = \\frac{(-1)^n}{n}',
+      fn: n => Math.pow(-1, n) / n,
+      limit: 0, limitType: 'finite', nMax: 30,
+      bounds: [
+        { label: 'h_n = 1/n', latex: 'h_n = \\frac{1}{n}', fn: n => 1/n, type: 'upper', explanation: 'الحد الأعلى: لأن (-1)^n/n ≤ 1/n دائماً.' },
+        { label: 'g_n = -1/n', latex: 'g_n = -\\frac{1}{n}', fn: n => -1/n, type: 'lower', explanation: 'الحد الأدنى: لأن (-1)^n/n ≥ -1/n دائماً.' }
+      ],
+      explanation: 'متتالية تتذبذب حول الصفر لكن سعة التذبذب تتناقص.',
+      solveMethod: 'بما أن $-1/n \\le (-1)^n/n \\le 1/n$ ونهاية الحاصرين 0، فإن $\\lim u_n = 0$.'
+    },
+    {
+      id: 'seq_2', label: 'u_n = n/(n+1)',
+      latex: 'u_n = \\frac{n}{n+1}',
+      fn: n => n / (n + 1),
+      limit: 1, limitType: 'finite', nMax: 30,
+      bounds: [
+        { label: 'h_n = 1', latex: 'h_n = 1', fn: n => 1, type: 'upper', explanation: 'الحد الأعلى: n/(n+1) < 1 لكل n.' }
+      ],
+      explanation: 'متتالية أحادية متزايدة محصورة من الأعلى بالعدد 1.',
+      solveMethod: '$$\\lim_{n \\to \\infty} \\frac{n}{n+1} = \\lim_{n \\to \\infty} \\frac{1}{1+1/n} = 1$$'
+    }
+  ];
+
+  // ===== Global Modal Manager =====
+  const modal = document.getElementById('info-modal');
+  const modalContent = document.getElementById('modal-content');
+  const modalClose = document.getElementById('modal-close');
+  
+  function showLineDetails(fdata, type, val, dataset, state) {
+    let html = '';
+    if (type === 'function') {
+      const aStr = state.isInfinity ? (state.infinitySign > 0 ? '+\\infty' : '-\\infty') : state.approachPoint;
+      const limitStr = fdata.limitType === 'finite' ? fdata.limit : '\\infty';
+      const explanation = fdata.explanation ? fdata.explanation.replace(/\{a\}/g, aStr) : '';
+      const solveMethod = fdata.solveMethod ? fdata.solveMethod.replace(/\{a\}/g, aStr).replace(/\{limit\}/g, limitStr) : '';
+      html = `
+        <div class="modal-badge orange">منحنى الدالة f(x)</div>
+        <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">$${fdata.displayLatex || fdata.latex}$</h2>
+        <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">${explanation}</p>
+        <div class="bg-[var(--paper-cool)] p-4 rounded border border-[rgba(10,30,63,0.1)] mb-4">
+          <div class="font-mono text-sm mb-2" style="color: var(--ink-soft);">طريقة حساب النهاية:</div>
+          <div class="font-serif text-base leading-relaxed">${solveMethod}</div>
+        </div>`;
+    } else if (type === 'va') {
+      const explanation = (dataset && dataset.explanation) ? dataset.explanation : 'المستقيم العمودي يظهر عند القيم الممنوعة.';
+      html = `
+        <div class="modal-badge orange">مستقيم مقارب عمودي</div>
+        <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">المعادلة: $x = ${val}$</h2>
+        <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">${explanation}</p>`;
+    } else if (type === 'ha') {
+      const explanation = (dataset && dataset.explanation) ? dataset.explanation : 'المستقيم الأفقي يوازي محور x ويصف استقرار الدالة عند ±∞.';
+      html = `
+        <div class="modal-badge orange">مستقيم مقارب أفقي</div>
+        <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">المعادلة: $y = ${val}$</h2>
+        <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">${explanation}</p>`;
+    } else if (type === 'bound') {
+      const idx = dataset && dataset.idx ? parseInt(dataset.idx, 10) : -1;
+      let boundInfo = null;
+      if (fdata && fdata.bounds && idx >= 0 && idx < fdata.bounds.length) boundInfo = fdata.bounds[idx];
+      const displayLatex = boundInfo ? boundInfo.latex : (dataset && dataset.label ? dataset.label : 'Bound');
+      const explanation = boundInfo ? boundInfo.explanation : 'هذا المنحنى يمثل إحدى الدوال الحاشرة أو المقارنة.';
+      html = `
+        <div class="modal-badge green">منحنى الحصر / المقارنة</div>
+        <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">$${displayLatex}$</h2>
+        <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">${explanation}</p>`;
+    } else if (type === 'limit-guide') {
+      html = `
+        <div class="modal-badge green">خط النهاية (Limit Guide)</div>
+        <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">النهاية = $${val}$</h2>
+        <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">
+          هذا الخط الأخضر المتقطع يمثل القيمة التي تقترب منها الدالة $f(x)$. 
+          أثناء تحرك النقطة $x$ نحو $a$، ستلاحظ أن النقطة البرتقالية $P$ تقترب من هذا الخط بلا توقف.
+        </p>`;
+    } else if (type === 'comparison') {
+      const fdata = getCurrentFunctionData();
+      if (useLHopital && currentIndeterminate && (currentIndeterminate.lhopital || (currentIndeterminate.ref && functions[currentIndeterminate.ref] && functions[currentIndeterminate.ref].lhopital))) {
+        const base = currentIndeterminate.ref ? functions[currentIndeterminate.ref] : currentIndeterminate;
+        html = `
+          <div class="modal-badge orange">الدالة الأصلية (قبل لوبيتال)</div>
+          <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">$${base.displayLatex || base.latex || ''}$</h2>
+          <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">المنحنى البنفسجي يمثل الدالة قبل تطبيق قاعدة لوبيتال.</p>
+          <div class="bg-[var(--paper-cool)] p-4 rounded border border-[rgba(10,30,63,0.1)] font-serif">${base.explanation}</div>`;
+      } else if (fdata.transformedFn && fdata.transformedLabel) {
+        html = `
+          <div class="modal-badge orange">الدالة الأصلية</div>
+          <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">$${fdata.displayLatex || fdata.latex || ''}$</h2>
+          <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">لحساب النهاية، نستخدم التحويل:</p>
+          <div class="bg-[var(--paper-cool)] p-4 rounded border border-[rgba(10,30,63,0.1)] mb-4">$$${fdata.transformedLabel}$$</div>
+          <p class="font-serif text-base leading-relaxed">${fdata.solveMethod}</p>`;
+      } else {
+        html = `
+          <div class="modal-badge orange">الدالة الأصلية</div>
+          <h2 class="font-display font-bold text-2xl text-[var(--navy)] mb-4">$${fdata.displayLatex || fdata.latex || ''}$</h2>
+          <p class="font-serif text-base leading-relaxed text-[var(--ink)] mb-4">المنحنى البنفسجي يمثل الدالة الأصلية قبل أي تحويل.</p>`;
+      }
+    }
+    
+    if(html === '') return;
+
+    modalContent.innerHTML = html;
+    modal.classList.add('active');
+    setTimeout(() => {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(modalContent, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+      }
+    }, 50);
+  }
+
+  modalClose.addEventListener('click', () => modal.classList.remove('active'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+  // ===== Lab Factory Function =====
+  function createLab(container, stage) {
+    const CFG = { W: 900, H: 700, cx: 450, cy: 350, unit: 50, xMin: -9, xMax: 9, yMin: -7, yMax: 7 };
+    const sx = x => CFG.cx + x * CFG.unit;
+    const sy = y => CFG.cy - y * CFG.unit;
+    const ix = sx => (sx - CFG.cx) / CFG.unit;
+
+    let currentU = u_options[1]; // Default 1/x
+    let currentV = v_options[2]; // Default sin(X)
+    let showComponents = false;
+    let labMode = 'composition'; // 'composition' or 'sandwich' or 'sequence'
+    let currentSandwich = sandwich_presets[0];
+    let currentSequence = sequence_presets[0];
+    let currentEpsPreset = eps_presets[1];
+    let currentIndeterminate = indeterminate_presets.find(p => p.stage === stage && p.id.includes('default')) || indeterminate_presets[0];
+    let currentContinuity = continuity_presets[0];
+
+    // Advanced Tools State
+    let showTangent = false;
+    let useLHopital = false;
+    let showComparison = false;
+    let epsValue = 0.5;
+    let deltaValue = 0.5;
+
+    // Initial preset based on stage
+    let initialFnKey;
+    if (stage === 1) initialFnKey = currentIndeterminate.ref || 'stage1';
+    else if (stage === 2) initialFnKey = currentIndeterminate.ref || 'stage2';
+    else if (stage === 5) initialFnKey = 'composed';
+    else initialFnKey = 'composed';
+    
+    const state = {
+      currentFn: initialFnKey,
+      approachPoint: stage === 1 ? 0 : (stage === 2 ? (currentIndeterminate.defaultApproach !== undefined ? currentIndeterminate.defaultApproach : functions.stage2.defaultApproach) : (stage === 3 ? currentEpsPreset.a : (stage === 5 ? currentContinuity.a : currentU.defaultA))),
+      isInfinity: stage === 1 || (stage === 2 && currentIndeterminate.isInfinityDefault) || (stage === 4 && currentSandwich.isInfinity) || false,
+      infinitySign: 1,
+      currentX: stage === 1 ? functions.stage1.defaultX : (stage === 2 ? functions.stage2.defaultX : (stage === 3 ? currentEpsPreset.a : (stage === 5 ? currentContinuity.a + 1 : 2))),
+      currentN: 1,
+      direction: (stage === 2 && currentIndeterminate.forceDirection) ? currentIndeterminate.forceDirection : 'both',
+      isRunning: false,
+      speed: 5,
+      step: 0,
+      sideToggle: 0,
+      trail: [],
+      tableRight: [],
+      tableLeft: [],
+      timer: null,
+      showBounds: true,
+      viewCx: 0,
+      viewCy: 0
+    };
+
+    // ===== HTML Template Generation =====
+    function getControlsHTML() {
+      if (stage === 3) {
+        return `
+          <div class="card p-6">
+            <span class="stage-badge" style="background: var(--blue);">مستكشف إبسلون-دلتا</span>
+            <p class="font-serif text-sm mb-4 text-[var(--ink-soft)]">أنت تتحكم في $\epsilon$ (الخطأ المسموح في $y$). سيقوم المختبر بحساب $\delta$ (الاستجابة في $x$) تلقائياً.</p>
+            
+            <div class="flex flex-wrap gap-2 mb-4" data-el="eps-chips">
+              ${eps_presets.map(p => `<button class="chip chip-blue ${p.id === currentEpsPreset.id ? 'active' : ''}" data-eps-id="${p.id}">${p.label}</button>`).join('')}
+            </div>
+
+            <div class="mb-4">
+              <div class="meta-text mb-2" style="color: var(--blue);">ε (دقة المحور y)</div>
+              <input type="range" data-el="eps-slider" min="0.1" max="3" step="0.1" value="0.5" class="speed-slider blue-slider w-full">
+              <div class="text-center font-mono text-sm mt-1">ε = <span data-el="eps-val">0.5</span></div>
+            </div>
+
+            <div class="mb-4 p-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)]">
+              <div class="info-row"><span class="info-label">δ المحسوبة</span><span class="info-value" data-el="delta-val" style="color: var(--orange);">0.5</span></div>
+              <div data-el="eps-delta-status" class="eps-delta-status success">المنحنى محصور داخل ε بنجاح!</div>
+            </div>
+            
+            <div class="card-navy p-4 text-center text-sm">
+              $$0 < |x - a| < \delta \implies |f(x) - L| < \epsilon$$             </div>
+          </div>
+        `;
+      }
+
+      let html = `
+        <div class="card p-6">
+          ${stage >= 1 && stage !== 5 ? `
+          <div class="mb-6">
+            <span class="stage-badge">المرحلة 1: المالانهاية</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div class="meta-text mb-2" style="color: var(--orange);">اتجاه المالانهاية</div>
+                <div class="flex gap-2">
+                  <button data-el="inf-left-btn" class="dir-btn flex-1">x → −∞</button>
+                  <button data-el="inf-right-btn" class="dir-btn flex-1 ${state.isInfinity ? 'active warning' : ''}">x → +∞</button>
+                </div>
+              </div>
+              <div>
+                <div class="meta-text mb-2" style="color: var(--orange);">التحكم</div>
+                <div class="flex flex-wrap gap-2">
+                  <button data-el="start-btn" class="btn-action btn-primary flex-1">ابدأ</button>
+                  <button data-el="pause-btn" class="btn-action btn-secondary flex-1" disabled>إيقاف</button>
+                  <button data-el="reset-btn" class="btn-action btn-ghost">تصفير</button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="flex items-center justify-between mb-1">
+                <span class="meta-text" style="color: var(--ink-soft); font-size: 0.7rem;">السرعة</span>
+                <span class="font-mono text-xs" data-el="speed-val">×5</span>
+              </div>
+              <input type="range" data-el="speed-slider" min="1" max="10" value="5" class="speed-slider">
+            </div>
+          </div>
+          ` : ''}
+
+          ${stage >= 2 ? `
+          <div class="mb-6 ${stage > 2 ? 'pt-6 border-t border-dashed border-[rgba(10,30,63,0.15)]' : ''}">
+            <span class="stage-badge">المرحلة 2: عدد حقيقي</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div class="meta-text mb-2" style="color: var(--green);">نقطة الاقتراب (a)</div>
+                <div class="approach-badge mb-3 w-full justify-between">
+                  <span class="label">a =</span>
+                  <span class="value font-mono" data-el="approach-display">1.000</span>
+                </div>
+                <input type="range" data-el="approach-slider" min="-8" max="8" step="0.1" value="1" class="speed-slider w-full">
+              </div>
+              <div>
+                <div class="meta-text mb-2" style="color: var(--green);">اتجاه الاقتراب</div>
+                <div class="flex gap-1">
+                  <button class="dir-btn flex-1 active" data-dir="both">الجهتين</button>
+                  <button class="dir-btn flex-1" data-dir="right">يمين (+)</button>
+                  <button class="dir-btn flex-1" data-dir="left">يسار (−)</button>
+                </div>
+                <button data-el="zoom-btn" class="btn-action btn-ghost w-full mt-3 text-sm justify-center">تكبير حول a 🔍</button>
+              </div>
+            </div>
+          </div>
+          ` : ''}
+
+          <!-- Advanced Tools -->
+          <div class="pt-6 border-t border-dashed border-[rgba(10,30,63,0.15)]">
+            <span class="stage-badge" style="background: var(--blue);">أدوات تحليلية متقدمة</span>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+              <button data-el="toggle-tangent" class="btn-action btn-ghost text-sm flex-1">رسم المماس (f′)</button>
+              ${stage === 1 || stage === 2 ? `<button data-el="apply-lhopital" class="btn-action btn-blue text-sm flex-1" style="display:none;">تطبيق قاعدة لوبيتال</button>` : ''}
+              ${stage === 1 || stage === 2 ? `<button data-el="toggle-comparison" class="btn-action btn-ghost text-sm flex-1" style="display:none;">قارن مع الدالة الأصلية</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+      return html;
+    }
+
+    container.innerHTML = `
+      <div class="card p-4 mb-4">
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <h3 class="font-display font-bold text-[var(--navy)] m-0">الأداة التفاعلية (المرحلة ${stage})</h3>
+          <div class="status-pill idle" data-el="status-pill">
+            <span class="pip"></span>
+            <span data-el="status-text">جاهز</span>
+          </div>
+        </div>
+        
+        ${stage < 3 ? `
+        <div class="flex gap-2 items-center mb-4 lab-ctrl controls-hidden">
+          <input type="text" data-el="custom-fn-input" class="flex-1 font-mono text-sm p-2 border border-[rgba(10,30,63,0.3)] bg-[var(--paper-warm)] text-[var(--navy)]" placeholder="أدخل دالة مثل: (2*x+1)/(x-3)">
+          <button data-el="apply-custom-fn" class="btn-action btn-secondary text-sm p-2">تطبيق</button>
+        </div>
+        ` : ''}
+
+        ${stage === 4 ? `
+        <div class="flex gap-2 mb-4 border-b border-[rgba(10,30,63,0.2)] pb-3 lab-ctrl controls-hidden">
+          <button data-el="mode-btn-comp" class="btn-action btn-primary text-sm flex-1">مختبر التركيب</button>
+          <button data-el="mode-btn-sand" class="btn-action btn-ghost text-sm flex-1">مختبر الحصر والمقارنة</button>
+          <button data-el="mode-btn-seq" class="btn-action btn-ghost text-sm flex-1">متتاليات</button>
+        </div>
+
+        <div data-el="comp-ui" class="mb-6 p-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)] lab-ctrl controls-hidden">
+          <h4 class="font-display font-bold text-[var(--purple)] mb-3 text-sm">مختبر تركيب الدوال (f = v ∘ u)</h4>
+          <div class="mb-4">
+            <div class="meta-text mb-2" style="color: var(--purple);">1. اختر الدالة الداخلية u(x):</div>
+            <div class="flex flex-wrap gap-2" data-el="u-chips">
+              ${u_options.map(u => `<button class="chip chip-purple ${u.id === currentU.id ? 'active' : ''}" data-u-id="${u.id}">${u.label}</button>`).join('')}
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="meta-text mb-2" style="color: var(--orange);">2. اختر الدالة الخارجية v(X):</div>
+            <div class="flex flex-wrap gap-2" data-el="v-chips">
+              ${v_options.map(v => `<button class="chip ${v.id === currentV.id ? 'active' : ''}" data-v-id="${v.id}">${v.label}</button>`).join('')}
+            </div>
+          </div>
+          <div class="bg-[var(--navy)] text-[var(--paper-warm)] p-3 text-center mt-4">
+            <span class="font-mono text-sm">الدالة المركبة f(x) = </span>
+            <span data-el="composed-latex" class="font-mono"></span>
+          </div>
+          <button data-el="toggle-components" class="btn-action btn-ghost w-full mt-3 text-sm justify-center">إظهار/إخفاء الدوال الأساسية (u و v)</button>
+        </div>
+
+        <div data-el="sand-ui" class="mb-6 p-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)] lab-ctrl controls-hidden" style="display:none;">
+          <h4 class="font-display font-bold text-[var(--green)] mb-3 text-sm">مبرهنة الحصر والمقارنة</h4>
+          <div class="mb-4">
+            <div class="meta-text mb-2" style="color: var(--green);">اختر مثالاً تفاعلياً:</div>
+            <div class="flex flex-wrap gap-2" data-el="sand-chips">
+              ${sandwich_presets.map(s => `<button class="chip chip-green ${s.id === currentSandwich.id ? 'active' : ''}" data-sand-id="${s.id}">${s.label}</button>`).join('')}
+            </div>
+          </div>
+          <div class="bg-[var(--navy)] text-[var(--paper-warm)] p-3 text-center mt-4">
+            <span class="font-mono text-sm">الدالة قيد الدراسة: </span>
+            <span data-el="sand-latex" class="font-mono"></span>
+          </div>
+          <div class="flex items-center gap-2 mt-4 text-sm font-serif text-[var(--ink-soft)]">
+            <span class="w-4 h-1" style="background: var(--green);"></span> الحد الأعلى h(x)
+            <span class="w-4 h-1 mr-4" style="background: var(--orange-soft);"></span> الحد الأدنى g(x)
+          </div>
+        </div>
+
+        <div data-el="seq-ui" class="mb-6 p-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)] lab-ctrl controls-hidden" style="display:none;">
+          <h4 class="font-display font-bold text-[var(--blue)] mb-3 text-sm">مختبر المتتاليات</h4>
+          <div class="mb-4">
+            <div class="meta-text mb-2" style="color: var(--blue);">اختر متتالية:</div>
+            <div class="flex flex-wrap gap-2" data-el="seq-chips">
+              ${sequence_presets.map(s => `<button class="chip chip-blue ${s.id === currentSequence.id ? 'active' : ''}" data-seq-id="${s.id}">${s.label}</button>`).join('')}
+            </div>
+          </div>
+          <div class="bg-[var(--navy)] text-[var(--paper-warm)] p-3 text-center mt-4">
+            <span class="font-mono text-sm">المتتالية قيد الدراسة: </span>
+            <span data-el="seq-latex" class="font-mono"></span>
+          </div>
+          <div class="mt-4">
+            <div class="flex items-center justify-between mb-1">
+              <span class="meta-text" style="color: var(--ink-soft); font-size: 0.7rem;">الحد الأقصى المعروض (N)</span>
+              <span class="font-mono text-xs" data-el="seq-n-val">N = 1</span>
+            </div>
+            <input type="range" data-el="seq-n-slider" min="1" max="30" value="1" class="speed-slider blue-slider w-full">
+          </div>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button data-el="seq-start-btn" class="btn-action btn-primary text-sm flex-1">تشغيل</button>
+            <button data-el="seq-pause-btn" class="btn-action btn-secondary text-sm flex-1" disabled>إيقاف</button>
+            <button data-el="seq-reset-btn" class="btn-action btn-ghost text-sm">تصفير</button>
+          </div>
+        </div>
+        ` : ''}
+
+        ${stage === 1 || stage === 2 ? `
+        <div class="flex flex-wrap gap-2 mb-4 lab-ctrl controls-hidden" data-el="ind-chips">
+          ${indeterminate_presets.filter(p => p.stage === stage).map(p => `<button class="chip ${p.id === currentIndeterminate.id ? 'active' : ''}" data-ind-id="${p.id}">${p.label}</button>`).join('')}
+        </div>
+        ` : ''}
+
+        ${stage === 5 ? `
+        <div class="flex flex-wrap gap-2 mb-4 lab-ctrl controls-hidden" data-el="cont-chips">
+          ${continuity_presets.map(p => `<button class="chip chip-green ${p.id === currentContinuity.id ? 'active' : ''}" data-cont-id="${p.id}">${p.label}</button>`).join('')}
+        </div>
+        ` : ''}
+
+        <div class="card card-corner p-1 mb-4">
+          <div class="graph-paper-bg relative" style="aspect-ratio: 9/7;">
+            <svg class="graph-svg" data-el="graph-svg" viewBox="0 0 900 700" preserveAspectRatio="xMidYMid meet" tabindex="0" aria-label="رسم بياني تفاعلي — استخدم الأسهم لتحريك نقطة الاقتراب">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L9,3 z" fill="var(--grid-axis)"/>
+                </marker>
+              </defs>
+              <g data-el="grid-group"></g>
+              <g data-el="axes-group"></g>
+              <g data-el="ticks-group"></g>
+              <g data-el="asymptotes-group"></g>
+              <g data-el="bounds-group"></g>
+              <path class="component-curve comparison-curve clickable-svg" fill="none" data-el="comparison-curve" data-line="comparison" style="display:none; stroke: var(--purple-soft);" title="الدالة الأصلية — اضغط للتفاصيل" />
+              
+              ${stage === 4 ? `
+              <path class="component-curve u-curve" fill="none" data-el="u-curve" style="display:none;" />
+              <path class="component-curve v-curve" fill="none" data-el="v-curve" style="display:none;" />
+              <g data-el="sequence-points-group"></g>
+              ` : ''}
+              
+              <rect data-el="eps-rect" class="eps-band" style="display:none;" />
+              <rect data-el="delta-rect" class="delta-band" style="display:none;" />
+              
+              <path class="function-curve clickable-svg" fill="none" stroke="#111" data-line="function" title="منحنى الدالة - اضغط للتفاصيل" />
+              <g data-el="holes-group"></g>
+              <g data-el="guides-group"></g>
+              <line data-el="tangent-line" class="tangent-line-svg" style="display:none;" />
+
+              <g data-el="trail-group"></g>
+              <g data-el="approach-group" style="display:none;">
+                <line class="guide-line" x1="0" y1="350" x2="0" y2="350"/>
+                <circle class="approach-point-handle" cx="0" cy="350" r="11"/>
+                <text class="approach-label" x="0" y="378" text-anchor="middle">a</text>
+              </g>
+              <g data-el="point-p-group">
+                <circle class="point-p-pulse" cx="0" cy="0" r="8"/>
+                <circle class="point-p" cx="0" cy="0" r="7"/>
+                <text class="point-p-label" x="0" y="0">P</text>
+              </g>
+            </svg>
+            <div class="absolute top-3 right-3 text-left">
+              <div class="font-mono text-xs px-2 py-1" style="background: rgba(250, 245, 230, 0.85); color: var(--ink-soft); border: 1px solid rgba(10,30,63,0.1);">
+                <span data-el="cursor-coord">x = — , y = —</span>
+              </div>
+            </div>
+            <button type="button" class="graph-settings-btn" data-el="settings-toggle" title="إظهار أدوات التحكم">⚙</button>
+          </div>
+        </div>
+
+        ${stage !== 3 ? `
+        <aside class="flex flex-col gap-4 mb-4">
+          <div class="card p-5">
+            <h3 class="card-title"><span>المعلومات الحية</span><span class="dot"></span></h3>
+            <div class="info-row"><span class="info-label">x</span><span class="info-value" data-el="x-val">—</span></div>
+            ${stage === 4 ? `<div class="info-row" data-el="ux-row" style="display: ${labMode === 'composition' ? 'flex' : 'none'};"><span class="info-label">u(x) الداخلية</span><span class="info-value" data-el="ux-val" style="color: var(--purple);">—</span></div>` : ''}
+            ${stage === 4 ? `<div class="info-row" data-el="seq-n-row" style="display: ${labMode === 'sequence' ? 'flex' : 'none'};"><span class="info-label">n</span><span class="info-value" data-el="seq-n-display">—</span></div>` : ''}
+            <div class="info-row"><span class="info-label">f(x) النهائية</span><span class="info-value" data-el="fx-val">—</span></div>
+            <div class="info-row"><span class="info-label">f′(x) الميل اللحظي</span><span class="info-value" data-el="fpx-val" style="color: var(--blue);">—</span></div>
+            <div class="info-row"><span class="info-label">|x − a|</span><span class="info-value" data-el="dist-val" style="color: var(--green);">—</span></div>
+            ${stage === 5 ? `
+            <div class="info-row"><span class="info-label">lim f(x)</span><span class="info-value" data-el="limit-val">—</span></div>
+            <div class="info-row"><span class="info-label">f(a)</span><span class="info-value" data-el="actual-val">—</span></div>
+            <div class="info-row"><span class="info-label">الحالة</span><span class="info-value" data-el="continuity-status">—</span></div>
+            ` : ''}
+          </div>
+          <div class="limit-display" data-el="limit-box">
+            <div class="meta-text mb-2" style="color: rgba(243,236,219,0.6); position: relative;">النهاية المكتشفة</div>
+            <div data-el="limit-katex" class="relative"></div>
+            <div class="verdict" data-el="limit-verdict">في انتظار بدء التجربة <span class="indicator"></span></div>
+          </div>
+          
+          ${stage === 2 ? `
+          <div class="card p-5">
+            <h3 class="card-title"><span>الجدول المقارن للجهتين</span></h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div class="meta-text mb-2 text-center" style="color: var(--orange);">x → a⁻ (يسار)</div>
+                <div class="table-scroll" style="max-height: 200px;">
+                  <table class="values-table">
+                    <thead><tr><th>x</th><th>f(x)</th></tr></thead>
+                    <tbody data-el="values-tbody-left">
+                      <tr><td colspan="2" class="text-center py-4" style="color: var(--ink-soft); font-family: 'Amiri', serif;">—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div>
+                <div class="meta-text mb-2 text-center" style="color: var(--green);">x → a⁺ (يمين)</div>
+                <div class="table-scroll" style="max-height: 200px;">
+                  <table class="values-table">
+                    <thead><tr><th>x</th><th>f(x)</th></tr></thead>
+                    <tbody data-el="values-tbody-right">
+                      <tr><td colspan="2" class="text-center py-4" style="color: var(--ink-soft); font-family: 'Amiri', serif;">—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          ` : `
+          <div class="card p-5">
+            <h3 class="card-title"><span>جدول القيم</span></h3>
+            <div class="table-scroll">
+              <table class="values-table">
+                <thead><tr><th>#</th><th>x</th><th>f(x)</th><th>|x−a|</th></tr></thead>
+                <tbody data-el="values-tbody-right">
+                  <tr><td colspan="4" class="text-center py-4" style="color: var(--ink-soft); font-family: 'Amiri', serif;">ابدأ التجربة لرؤية القيم</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          `}
+        </aside>
+        ` : ''}
+
+        <div data-el="controls-container" class="lab-ctrl controls-hidden">
+          ${getControlsHTML()}
+        </div>
+      </div>
+    `;
+
+    const $ = (selector) => container.querySelector(`[data-el="${selector}"]`) || container.querySelector(selector);
+    const svg = $('graph-svg');
+    const fnCurve = container.querySelector('.function-curve');
+    const approachGroup = $('approach-group');
+    const approachPoint = container.querySelector('.approach-point-handle');
+    const approachStem = container.querySelector('.guide-line');
+    const approachLabel = container.querySelector('.approach-label');
+    const pointP = container.querySelector('.point-p');
+    const pointPLabel = container.querySelector('.point-p-label');
+    const pointPPulse = container.querySelector('.point-p-pulse');
+    const trailGroup = $('trail-group');
+    const asymptotesGroup = $('asymptotes-group');
+    const boundsGroup = $('bounds-group');
+    const holesGroup = $('holes-group');
+    const guidesGroup = $('guides-group');
+    const gridGroup = $('grid-group');
+    const axesGroup = $('axes-group');
+    const ticksGroup = $('ticks-group');
+    
+    const tangentLine = $('tangent-line');
+    const epsRect = $('eps-rect');
+    const deltaRect = $('delta-rect');
+
+    // ===== Pan & Zoom Logic =====
+    let panState = { active: false, startX: 0, startY: 0, startViewCx: 0, startViewCy: 0 };
+    let hasDragged = false;
+
+    function recalculateView() {
+      const halfW = (CFG.W / 2) / CFG.unit;
+      const halfH = (CFG.H / 2) / CFG.unit;
+      CFG.xMin = state.viewCx - halfW;
+      CFG.xMax = state.viewCx + halfW;
+      CFG.yMin = state.viewCy - halfH;
+      CFG.yMax = state.viewCy + halfH;
+      CFG.cx = CFG.W / 2 - state.viewCx * CFG.unit;
+      CFG.cy = CFG.H / 2 + state.viewCy * CFG.unit;
+    }
+
+    function redrawAll() {
+      buildGrid();
+      drawFunctionCurve();
+      drawComponents();
+      drawBounds();
+      drawAsymptotes();
+      drawHoles();
+      drawComparison();
+      updateGuides();
+      updateApproachPoint();
+      if (stage === 3) updateEpsDelta();
+    }
+
+    // القيمة المستهدفة (النهاية أو ارتفاع الثقب) التي يجب أن تبقى ظاهرة في الرسم
+    function getTargetLimit() {
+      const fdata = getCurrentFunctionData();
+      if (stage === 5) {
+        if (fdata.limitAtA !== undefined && isFinite(fdata.limitAtA)) return fdata.limitAtA;
+        const fa = fdata.fn(fdata.a);
+        if (isFinite(fa)) return fa;
+        return null;
+      }
+      if (isFinite(fdata.limit)) return parseFloat(fdata.limit);
+      if (fdata.hole && isFinite(fdata.hole.y)) return fdata.hole.y;
+      if (isFinite(fdata.L)) return fdata.L;
+      return null;
+    }
+
+    function getContinuityVerdict(preset) {
+      const a = preset.a;
+      const fa = preset.fn(a);
+      const left = preset.fn(a - 1e-6);
+      const right = preset.fn(a + 1e-6);
+      const actualVal = isFinite(fa) ? fa.toFixed(4) : (preset.caseType === 'infinite' ? 'غير معرّف' : '—');
+      let limitVal, status, message;
+      if (preset.caseType === 'continuous') {
+        limitVal = isFinite(left) && isFinite(right) ? ((left + right) / 2).toFixed(4) : '—';
+        status = 'continuous';
+        message = 'متصلة: النهاية تساوي f(a)';
+      } else if (preset.caseType === 'removable') {
+        const L = preset.limitAtA !== undefined ? preset.limitAtA : ((isFinite(left) && isFinite(right)) ? (left + right) / 2 : NaN);
+        limitVal = isFinite(L) ? L.toFixed(4) : '—';
+        status = 'removable';
+        message = `ثقب قابل للإزالة: L=${limitVal} لكن f(a)=${actualVal}`;
+      } else if (preset.caseType === 'jump') {
+        limitVal = `L⁻=${left.toFixed(2)}, L⁺=${right.toFixed(2)}`;
+        status = 'jump';
+        message = 'قفزة: النهايتان اليسرى واليمنى مختلفتان';
+      } else {
+        limitVal = 'غير موجودة (∞)';
+        status = 'infinite';
+        message = 'مقارب عمودي: الدالة تتجه إلى ±∞';
+      }
+      return { status, limitVal, actualVal, message };
+    }
+
+    function centerView() {
+      const L = getTargetLimit();
+      if (state.isInfinity) {
+        state.viewCx = 0;
+        state.viewCy = L !== null ? L : 0;
+      } else {
+        // نوسّط الرسم بين النقطة a على المحور الأفقي (y=0) ونقطة عدم التعيين/النهاية (y=L)
+        state.viewCx = state.approachPoint;
+        state.viewCy = L !== null ? L / 2 : 0;
+      }
+    }
+
+    function resetView() {
+      CFG.unit = 50;
+      centerView();
+      recalculateView();
+      redrawAll();
+    }
+
+    function recenterOnApproach() {
+      state.viewCx = state.approachPoint;
+      const L = getTargetLimit();
+      state.viewCy = L !== null ? L / 2 : 0;
+      recalculateView();
+      redrawAll();
+    }
+
+    function applyDirectionEnforcement() {
+      const preset = currentIndeterminate;
+      const buttons = Array.from(container.querySelectorAll('.dir-btn[data-dir]'));
+      if (preset && preset.forceDirection) {
+        buttons.forEach(btn => {
+          const dir = btn.dataset.dir;
+          btn.disabled = dir !== preset.forceDirection;
+          btn.classList.toggle('active', dir === preset.forceDirection);
+        });
+      } else {
+        buttons.forEach(btn => {
+          btn.disabled = false;
+          btn.classList.toggle('active', btn.dataset.dir === state.direction);
+        });
+      }
+    }
+
+    function setIndeterminatePreset(preset) {
+      currentIndeterminate = preset;
+      state.currentFn = preset.ref || preset.id;
+      useLHopital = false;
+      showComparison = false;
+      const lhopBtn = $('apply-lhopital');
+      if (lhopBtn) lhopBtn.textContent = 'تطبيق قاعدة لوبيتال';
+      const cmpBtn = $('toggle-comparison');
+      if (cmpBtn) { cmpBtn.classList.add('btn-ghost'); cmpBtn.classList.remove('btn-primary'); }
+      if (preset.forceDirection) state.direction = preset.forceDirection;
+      container.querySelectorAll('[data-ind-id]').forEach(b => b.classList.toggle('active', b.dataset.indId === preset.id));
+      applyDirectionEnforcement();
+      if (preset.isInfinityDefault) {
+        setInfinity(1);
+      } else {
+        state.isInfinity = stage === 1;
+        state.infinitySign = 1;
+        if (preset.defaultApproach !== undefined) state.approachPoint = preset.defaultApproach;
+        reset();
+      }
+    }
+
+    function setContinuityPreset(preset) {
+      currentContinuity = preset;
+      state.approachPoint = preset.a;
+      state.currentX = preset.a + 1;
+      state.direction = 'both';
+      state.isInfinity = false;
+      useLHopital = false;
+      showComparison = false;
+      container.querySelectorAll('[data-cont-id]').forEach(b => b.classList.toggle('active', b.dataset.contId === preset.id));
+      reset();
+    }
+
+    // ===== Composite Function Logic =====
+    function getComposedData() {
+      const u = currentU;
+      const v = currentV;
+      const fn = x => {
+        const ux = u.fn(x);
+        if (!isFinite(ux)) return NaN;
+        return v.fn(ux);
+      };
+      const dfn = x => {
+        const h = 1e-5;
+        const u1 = u.fn(x + h), u2 = u.fn(x - h);
+        if (!isFinite(u1) || !isFinite(u2)) return NaN;
+        const v1 = v.fn(u1), v2 = v.fn(u2);
+        if (!isFinite(v1) || !isFinite(v2)) return NaN;
+        return (v1 - v2) / (2 * h);
+      };
+      const latex = v.latex.replace(/X/g, `\\left( ${u.latex} \\right)`);
+      const a = state.isInfinity ? (state.infinitySign > 0 ? '+\\infty' : '-\\infty') : state.approachPoint;
+      let b, c;
+      if (state.isInfinity) {
+         if (u.id === 'u_inv_x') b = '0';
+         else if (u.id === 'u_x') b = a;
+         else if (u.id === 'u_sin') b = '\\text{غير موجود}';
+         else if (u.id === 'u_x_minus_1') b = a;
+      } else {
+         b = u.fn(state.approachPoint).toFixed(2);
+      }
+      if (b === '0' || b === '0.00') c = v.fn(0).toFixed(2);
+      else if (b.includes('infty')) c = v.limitInf;
+      else if (b === '\\text{غير موجود}') c = '\\text{غير موجود}';
+      else {
+         const bVal = parseFloat(b);
+         if (isFinite(bVal)) c = v.fn(bVal).toFixed(2);
+      }
+      return {
+        label: 'دالة مركبة', displayLatex: latex, fn, dfn,
+        defaultApproach: u.defaultA, limit: c, limitType: 'finite',
+        explanation: `دالة مركبة $f(x) = v(u(x)) = ${latex}$. <br>لحساب النهاية عند $x \\to ${a}$، نطبق القاعدة على مرحلتين:`,
+        solveMethod: `<strong>الخطوة 1:</strong> نحسب نهاية الدالة الداخلية:<br>$$\\lim_{x \\to ${a}} u(x) = \\lim_{x \\to ${a}} ${u.latex} = ${b}$$<br><strong>الخطوة 2:</strong> نعوض بالنتيجة في الدالة الخارجية:<br>$$\\lim_{X \\to ${b}} v(X) = \\lim_{X \\to ${b}} ${v.latex} = ${c}$$`
+      };
+    }
+
+    function updateComposedLatex() {
+      if (stage !== 4 || labMode !== 'composition') return;
+      const data = getComposedData();
+      try { katex.render(data.displayLatex, $('composed-latex'), { throwOnError: false }); } catch(e) { $('composed-latex').textContent = data.displayLatex; }
+    }
+
+    function updateSandwichLatex() {
+      if (stage !== 4 || labMode !== 'sandwich') return;
+      try { katex.render(currentSandwich.latex, $('sand-latex'), { throwOnError: false }); } catch(e) { $('sand-latex').textContent = currentSandwich.latex; }
+    }
+
+    function buildGrid() {
+      let gridHtml = '';
+      const step = CFG.unit < 30 ? 1 : 0.2;
+      for (let x = Math.ceil(CFG.xMin / step) * step; x <= CFG.xMax; x += step) gridHtml += `<line class="grid-minor" x1="${sx(x)}" y1="0" x2="${sx(x)}" y2="${CFG.H}"/>`;
+      for (let y = Math.ceil(CFG.yMin / step) * step; y <= CFG.yMax; y += step) gridHtml += `<line class="grid-minor" x1="0" y1="${sy(y)}" x2="${CFG.W}" y2="${sy(y)}"/>`;
+      for (let x = Math.ceil(CFG.xMin); x <= CFG.xMax; x += 1) gridHtml += `<line class="grid-major" x1="${sx(x)}" y1="0" x2="${sx(x)}" y2="${CFG.H}"/>`;
+      for (let y = Math.ceil(CFG.yMin); y <= CFG.yMax; y += 1) gridHtml += `<line class="grid-major" x1="0" y1="${sy(y)}" x2="${CFG.W}" y2="${sy(y)}"/>`;
+      gridGroup.innerHTML = gridHtml;
+
+      let axesHtml = '';
+      axesHtml += `<line class="axis-line" x1="0" y1="${CFG.cy}" x2="${CFG.W}" y2="${CFG.cy}" marker-end="url(#arrowhead)"/>`;
+      axesHtml += `<line class="axis-line" x1="${CFG.cx}" y1="${CFG.H}" x2="${CFG.cx}" y2="0" marker-end="url(#arrowhead)"/>`;
+      axesHtml += `<text class="axis-title" x="${CFG.W - 15}" y="${CFG.cy - 5}" text-anchor="end">x</text>`;
+      axesHtml += `<text class="axis-title" x="${CFG.cx + 10}" y="15">y</text>`;
+      if (CFG.xMin < 0 && CFG.xMax > 0 && CFG.yMin < 0 && CFG.yMax > 0) {
+        axesHtml += `<text class="axis-label" x="${CFG.cx + 5}" y="${CFG.cy + 15}" font-size="10">0</text>`;
+      }
+      axesGroup.innerHTML = axesHtml;
+
+      let ticksHtml = '';
+      for (let x = Math.ceil(CFG.xMin); x <= CFG.xMax; x += 1) {
+        if (x === 0) continue;
+        ticksHtml += `<line class="axis-tick" x1="${sx(x)}" y1="${CFG.cy - 4}" x2="${sx(x)}" y2="${CFG.cy + 4}"/>`;
+        ticksHtml += `<text class="axis-label" x="${sx(x)}" y="${CFG.cy + 18}" text-anchor="middle">${x}</text>`;
+      }
+      for (let y = Math.ceil(CFG.yMin); y <= CFG.yMax; y += 1) {
+        if (y === 0) continue;
+        ticksHtml += `<line class="axis-tick" x1="${CFG.cx - 4}" y1="${sy(y)}" x2="${CFG.cx + 4}" y2="${sy(y)}"/>`;
+        ticksHtml += `<text class="axis-label" x="${CFG.cx - 8}" y="${sy(y) + 4}" text-anchor="end">${y}</text>`;
+      }
+      ticksGroup.innerHTML = ticksHtml;
+    }
+
+    function getSvgPath(fn) {
+      const samples = 800;
+      let path = '';
+      let inSegment = false;
+      let prevY = null;
+      for (let i = 0; i <= samples; i++) {
+        const x = CFG.xMin + (i / samples) * (CFG.xMax - CFG.xMin);
+        const y = fn(x);
+        if (!isFinite(y) || Math.abs(y) > 50) { inSegment = false; prevY = null; continue; }
+        if (prevY !== null && Math.abs(y - prevY) > 15) inSegment = false;
+        const px = sx(x);
+        const py = sy(Math.max(Math.min(y, CFG.yMax + 2), CFG.yMin - 2));
+        if (!inSegment) { path += `M ${px.toFixed(2)} ${py.toFixed(2)}`; inSegment = true; } 
+        else { path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`; }
+        prevY = y;
+      }
+      return path;
+    }
+
+    function getCurrentFunctionData() {
+      if (stage === 3) return currentEpsPreset;
+      if (stage === 5) return currentContinuity;
+      if (stage === 4) {
+        if (labMode === 'sandwich') return currentSandwich;
+        if (labMode === 'sequence') return currentSequence;
+        return getComposedData();
+      }
+      let baseData;
+      if (state.currentFn === 'custom' && functions.custom) baseData = functions.custom;
+      else baseData = currentIndeterminate.ref ? functions[currentIndeterminate.ref] : currentIndeterminate;
+      if (useLHopital && baseData.lhopital) {
+          return {
+              ...baseData,
+              originalFn: baseData.fn,
+              fn: baseData.lhopital.fn,
+              limit: baseData.lhopital.limit,
+              displayLatex: baseData.lhopital.displayLatex,
+              explanation: baseData.lhopital.explanation,
+              indeterminate: null,
+              solveMethod: `بتطبيق قاعدة لوبيتال:<br>$$\\lim_{x \\to a} \\frac{f(x)}{g(x)} = \\lim_{x \\to a} \\frac{f'(x)}{g'(x)}$$<br>${baseData.lhopital.explanation}`
+          };
+      }
+      return { ...baseData, originalFn: baseData.originalFn || baseData.fn };
+    }
+
+    function drawFunctionCurve() {
+      const fdata = getCurrentFunctionData();
+      if (stage === 4 && labMode === 'sequence') {
+        fnCurve.style.display = 'none';
+        drawSequencePoints(fdata.fn, state.currentN, 'sequence-point');
+      } else {
+        fnCurve.style.display = '';
+        const path = getSvgPath(fdata.fn);
+        fnCurve.setAttribute('d', path);
+        if (stage === 4) {
+          const seqGroup = $('sequence-points-group');
+          if (seqGroup) seqGroup.innerHTML = '';
+        }
+      }
+    }
+
+    function drawSequencePoints(fn, nMax, classNameOrFill, isBound = false, idx = 0) {
+      const seqGroup = $('sequence-points-group');
+      if (!seqGroup) return '';
+      let html = '';
+      const colorMap = {
+        'sequence-point': 'var(--blue)',
+        'bound-upper': 'var(--green)',
+        'bound-lower': 'var(--orange-soft)'
+      };
+      const fill = colorMap[classNameOrFill] || classNameOrFill || 'var(--blue)';
+      const r = isBound ? 4 : 5;
+      for (let n = 1; n <= nMax; n++) {
+        const y = fn(n);
+        if (!isFinite(y) || Math.abs(y) > 50) continue;
+        const px = sx(n);
+        const py = sy(y);
+        html += `<circle cx="${px}" cy="${py}" r="${r}" fill="${fill}" stroke="var(--paper-warm)" stroke-width="1.5" class="${isBound ? 'clickable-svg' : ''}" ${isBound ? `data-line="bound" data-idx="${idx}"` : ''} />`;
+      }
+      if (!isBound) seqGroup.innerHTML = html;
+      return html;
+    }
+
+    function updateSequenceLatex() {
+      if (stage !== 4 || labMode !== 'sequence') return;
+      try { katex.render(currentSequence.latex, $('seq-latex'), { throwOnError: false }); } catch(e) { if ($('seq-latex')) $('seq-latex').textContent = currentSequence.latex; }
+    }
+
+    function drawComponents() {
+      if (stage !== 4) return;
+      const uCurve = $('u-curve');
+      const vCurve = $('v-curve');
+      if (!uCurve || !vCurve) return;
+      if (labMode === 'composition' && showComponents) {
+        uCurve.setAttribute('d', getSvgPath(currentU.fn));
+        vCurve.setAttribute('d', getSvgPath(currentV.fn));
+        uCurve.style.display = '';
+        vCurve.style.display = '';
+      } else {
+        uCurve.style.display = 'none';
+        vCurve.style.display = 'none';
+      }
+    }
+
+    function drawBounds() {
+      const fdata = getCurrentFunctionData();
+      if (fdata.bounds && state.showBounds) {
+        let html = '';
+        if (stage === 4 && labMode === 'sequence') {
+          fdata.bounds.forEach((b, idx) => {
+            const colorClass = b.type === 'upper' ? 'bound-upper' : 'bound-lower';
+            html += drawSequencePoints(b.fn, state.currentN, colorClass, true, idx);
+          });
+        } else {
+          fdata.bounds.forEach((b, idx) => {
+            const path = getSvgPath(b.fn);
+            const boundClass = b.type === 'upper' ? 'bound-upper' : 'bound-lower';
+            html += `<path d="${path}" class="bounds-curve ${boundClass} clickable-svg" fill="none" data-line="bound" data-idx="${idx}" data-label="${b.label}" title="${b.label}" />`;
+          });
+        }
+        boundsGroup.innerHTML = html;
+      } else { boundsGroup.innerHTML = ''; }
+    }
+
+    function drawAsymptotes() {
+      const fdata = getCurrentFunctionData();
+      let html = '';
+      if (fdata.asymptotes) {
+        fdata.asymptotes.forEach(a => {
+          const explanation = a.explanation ? escapeHtml(a.explanation) : '';
+          if (a.type === 'vertical') {
+            const px = sx(a.x);
+            html += `<line x1="${px}" y1="0" x2="${px}" y2="${CFG.H}" stroke="transparent" stroke-width="14" class="clickable-svg" data-line="va" data-val="${a.x}" data-explanation="${explanation}" />`;
+            html += `<line class="asymptote-line clickable-svg" x1="${px}" y1="0" x2="${px}" y2="${CFG.H}" data-line="va" data-val="${a.x}" data-explanation="${explanation}" />`;
+          } else if (a.type === 'horizontal') {
+            const py = sy(a.y);
+            html += `<line x1="0" y1="${py}" x2="${CFG.W}" y2="${py}" stroke="transparent" stroke-width="14" class="clickable-svg" data-line="ha" data-val="${a.y}" data-explanation="${explanation}" />`;
+            html += `<line class="asymptote-line clickable-svg" x1="0" y1="${py}" x2="${CFG.W}" y2="${py}" data-line="ha" data-val="${a.y}" data-explanation="${explanation}" />`;
+          }
+        });
+      }
+      asymptotesGroup.innerHTML = html;
+    }
+
+    function drawHoles() {
+      const fdata = getCurrentFunctionData();
+      let html = '';
+      if (stage === 5) {
+        const preset = currentContinuity;
+        const a = preset.a;
+        const fa = preset.fn(a);
+        const px = sx(a);
+        if (preset.caseType === 'continuous') {
+          const py = sy(fa);
+          html += `<circle cx="${px}" cy="${py}" r="7" fill="var(--green)" stroke="var(--paper-warm)" stroke-width="2" />`;
+          html += `<text class="hole-label" x="${px + 14}" y="${py - 10}">f(${a})=${fa}</text>`;
+        } else if (preset.caseType === 'removable') {
+          const limitY = preset.limitAtA !== undefined ? preset.limitAtA : ((preset.fn(a - 1e-6) + preset.fn(a + 1e-6)) / 2);
+          const pyLimit = sy(limitY);
+          const pyActual = sy(fa);
+          html += `<circle cx="${px}" cy="${pyLimit}" r="6" fill="var(--paper-warm)" stroke="var(--navy)" stroke-width="2" />`;
+          html += `<circle cx="${px}" cy="${pyActual}" r="5" fill="var(--warning)" stroke="var(--paper-warm)" stroke-width="2" />`;
+          html += `<text class="hole-label" x="${px + 14}" y="${pyActual - 10}">f(${a})=${fa}</text>`;
+        } else if (preset.caseType === 'jump') {
+          const leftY = preset.fn(a - 1e-6);
+          const rightY = preset.fn(a);
+          const pyLeft = sy(leftY);
+          const pyRight = sy(rightY);
+          html += `<circle cx="${px}" cy="${pyLeft}" r="5" fill="var(--purple)" stroke="var(--paper-warm)" stroke-width="2" />`;
+          html += `<circle cx="${px}" cy="${pyRight}" r="5" fill="var(--orange)" stroke="var(--paper-warm)" stroke-width="2" />`;
+          html += `<text class="hole-label" x="${px + 14}" y="${pyLeft - 10}">L⁻=${leftY.toFixed(2)}</text>`;
+          html += `<text class="hole-label" x="${px + 14}" y="${pyRight + 18}">L⁺=${rightY.toFixed(2)}</text>`;
+        }
+      } else if (fdata.hole && !useLHopital) {
+        const px = sx(fdata.hole.x);
+        const py = sy(fdata.hole.y);
+        html += `<circle class="hole-ring" cx="${px}" cy="${py}" r="11"/>`;
+        html += `<circle class="hole-circle" cx="${px}" cy="${py}" r="6"/>`;
+        html += `<text class="hole-label" x="${px + 16}" y="${py - 12}">(${fdata.hole.x} , ${fdata.hole.y})</text>`;
+      }
+      holesGroup.innerHTML = html;
+    }
+
+    function drawComparison() {
+      const curve = $('comparison-curve');
+      if (!curve) return;
+      if (!showComparison) { curve.style.display = 'none'; return; }
+      const fdata = getCurrentFunctionData();
+      let originalFn = null;
+      if (useLHopital && currentIndeterminate && currentIndeterminate.ref && functions[currentIndeterminate.ref] && functions[currentIndeterminate.ref].lhopital) {
+        originalFn = functions[currentIndeterminate.ref].fn;
+      } else if (useLHopital && !currentIndeterminate.ref && currentIndeterminate.lhopital) {
+        originalFn = currentIndeterminate.fn;
+      } else if (fdata.originalFn) {
+        originalFn = fdata.originalFn;
+      }
+      if (!originalFn) { curve.style.display = 'none'; return; }
+      const path = getSvgPath(originalFn);
+      curve.setAttribute('d', path);
+      curve.style.display = '';
+    }
+
+    function updateApproachPoint() {
+      if (state.isInfinity || stage === 3) { approachGroup.style.display = 'none'; }
+      else {
+        approachGroup.style.display = '';
+        const px = sx(state.approachPoint);
+        const axisY = CFG.cy;
+        // النقطة a تبقى دائماً ملتصقة بالمحور الأفقي وتتبعه عند التحريك والتكبير
+        approachPoint.setAttribute('cx', px);
+        approachPoint.setAttribute('cy', axisY);
+        // خط متقطع عمودي يربط النقطة a بنقطة عدم التعيين/النهاية
+        const L = getTargetLimit();
+        if (L !== null && Math.abs(L) > 1e-9) {
+          approachStem.style.display = '';
+          approachStem.setAttribute('x1', px);
+          approachStem.setAttribute('y1', axisY);
+          approachStem.setAttribute('x2', px);
+          approachStem.setAttribute('y2', sy(L));
+        } else {
+          approachStem.style.display = 'none';
+        }
+        approachLabel.setAttribute('x', px);
+        approachLabel.setAttribute('y', axisY + 30);
+        if ($('approach-display')) $('approach-display').textContent = state.approachPoint.toFixed(3);
+        if ($('approach-slider')) $('approach-slider').value = state.approachPoint;
+      }
+      updateGuides();
+      updatePointP();
+      updateLimitDisplay();
+    }
+
+    function updateGuides() {
+      const fdata = getCurrentFunctionData();
+      let html = '';
+      let limitVal = null;
+      if (stage === 3) limitVal = currentEpsPreset.L;
+      else if (fdata.limitType === 'finite' && isFinite(fdata.limit)) limitVal = fdata.limit;
+      
+      if (limitVal !== null) {
+        const py = sy(limitVal);
+        html += `<line x1="0" y1="${py}" x2="${CFG.W}" y2="${py}" stroke="transparent" stroke-width="10" class="clickable-svg" data-line="limit-guide" data-val="${limitVal}" />`;
+        html += `<line class="guide-line clickable-svg" x1="0" y1="${py}" x2="${CFG.W}" y2="${py}" data-line="limit-guide" data-val="${limitVal}" />`;
+      }
+      guidesGroup.innerHTML = html;
+    }
+
+    function updatePointP() {
+      const fdata = getCurrentFunctionData();
+      const x = state.currentX;
+      const y = fdata.fn(x);
+      let px, py;
+      if (!isFinite(y) || Math.abs(y) > 50) {
+        const sign = y > 0 ? 1 : -1;
+        px = sx(x); py = sy(sign * (CFG.yMax - 0.5));
+        pointPLabel.textContent = 'P (≈∞)';
+      } else {
+        px = sx(x); py = sy(y);
+        pointPLabel.textContent = `P(${x.toFixed(2)}, ${y.toFixed(2)})`;
+      }
+      pointP.setAttribute('cx', px); pointP.setAttribute('cy', py);
+      pointPLabel.setAttribute('x', px + 12); pointPLabel.setAttribute('y', py - 8);
+      pointPPulse.setAttribute('cx', px); pointPPulse.setAttribute('cy', py);
+      if (stage === 5) {
+        const verdict = getContinuityVerdict(currentContinuity);
+        const color = verdict.status === 'continuous' ? 'var(--green)' : (verdict.status === 'infinite' ? 'var(--warning)' : 'var(--orange)');
+        pointP.style.fill = color;
+        pointPPulse.style.stroke = color;
+      } else {
+        pointP.style.fill = '';
+        pointPPulse.style.stroke = '';
+      }
+      pointPPulse.classList.remove('active'); void pointPPulse.offsetWidth; pointPPulse.classList.add('active');
+      if (stage !== 3) updateInfoPanel(x, y);
+      updateTangent(x, y);
+    }
+
+    function updateInfoPanel(x, y) {
+      const fdata = getCurrentFunctionData();
+      $('x-val').textContent = isFinite(x) ? x.toFixed(4) : '—';
+      $('fx-val').textContent = isFinite(y) ? (Math.abs(y) > 999 ? y.toExponential(2) : y.toFixed(4)) : 'غير معرّف';
+      const slope = fdata.dfn(x);
+      $('fpx-val').textContent = isFinite(slope) ? slope.toFixed(4) : '—';
+      if (stage === 4 && labMode === 'composition' && $('ux-val')) {
+        const ux = currentU.fn(x);
+        $('ux-val').textContent = isFinite(ux) ? ux.toFixed(4) : 'غير معرّف';
+      }
+      if (stage === 4 && labMode === 'sequence' && $('seq-n-display')) {
+        $('seq-n-display').textContent = state.currentN;
+      }
+      const dist = state.isInfinity ? Math.abs(x) : Math.abs(x - state.approachPoint);
+      $('dist-val').textContent = dist < 0.0001 ? dist.toExponential(2) : dist.toFixed(4);
+      if (stage === 5) {
+        const verdict = getContinuityVerdict(currentContinuity);
+        if ($('limit-val')) $('limit-val').textContent = verdict.limitVal;
+        if ($('actual-val')) $('actual-val').textContent = verdict.actualVal;
+        if ($('continuity-status')) $('continuity-status').textContent = verdict.message;
+      }
+      [$('x-val'), $('fx-val'), $('fpx-val'), $('dist-val')].forEach(el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 200); });
+    }
+
+    function updateTangent(x, y) {
+        if (!showTangent || !isFinite(y) || stage === 3) { tangentLine.style.display = 'none'; return; }
+        const fdata = getCurrentFunctionData();
+        const slope = fdata.dfn(x);
+        if (!isFinite(slope)) { tangentLine.style.display = 'none'; return; }
+        const len = 100;
+        const y1 = sy(y); const x1 = sx(x);
+        const svgSlope = -slope;
+        tangentLine.setAttribute('x1', x1 - len);
+        tangentLine.setAttribute('y1', y1 - svgSlope * len);
+        tangentLine.setAttribute('x2', x1 + len);
+        tangentLine.setAttribute('y2', y1 + svgSlope * len);
+        tangentLine.style.display = '';
+    }
+
+    function addTrail(x) {
+      const y = getCurrentFunctionData().fn(x);
+      if (!isFinite(y) || Math.abs(y) > 50) return;
+      state.trail.push({ x, y, step: state.step });
+      if (state.trail.length > 60) state.trail.shift();
+      renderTrail();
+    }
+
+    function renderTrail() {
+      let html = '';
+      state.trail.forEach((p, i) => {
+        const px = sx(p.x); const py = sy(p.y);
+        const opacity = 0.2 + 0.6 * (i / state.trail.length);
+        const r = 2 + 1.5 * (i / state.trail.length);
+        html += `<circle class="trail-dot" cx="${px}" cy="${py}" r="${r}" opacity="${opacity}"/>`;
+      });
+      trailGroup.innerHTML = html;
+    }
+
+    function clearTrail() { state.trail = []; trailGroup.innerHTML = ''; }
+
+    function addTableRow(x, side) {
+      const y = getCurrentFunctionData().fn(x);
+      const dist = state.isInfinity ? Math.abs(x) : Math.abs(x - state.approachPoint);
+      const rowData = { step: state.step, x, y, dist };
+      if (stage === 2 && side === 'both') { state.tableRight.push(rowData); state.tableLeft.push(rowData); }
+      else if (side === 'right') state.tableRight.push(rowData);
+      else if (side === 'left') state.tableLeft.push(rowData);
+      else state.tableRight.push(rowData);
+      renderTable();
+    }
+
+    function renderTable() {
+      if (stage === 2) {
+        renderSideTable('values-tbody-right', state.tableRight);
+        renderSideTable('values-tbody-left', state.tableLeft);
+      } else {
+        renderSingleTable('values-tbody-right', state.tableRight);
+      }
+    }
+
+    function renderSideTable(elName, data) {
+        const tbody = $(elName); if (!tbody) return;
+        if (data.length === 0) { tbody.innerHTML = `<tr><td colspan="2" class="text-center py-4" style="color: var(--ink-soft); font-family: 'Amiri', serif;">—</td></tr>`; return; }
+        const visible = data.slice(-10);
+        let html = '';
+        visible.forEach((row, i) => {
+            const isLatest = i === visible.length - 1;
+            const yStr = !isFinite(row.y) ? '—' : (Math.abs(row.y) > 999 ? row.y.toExponential(2) : row.y.toFixed(4));
+            html += `<tr class="${isLatest ? 'latest' : ''}"><td>${row.x.toFixed(4)}</td><td>${yStr}</td></tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    function renderSingleTable(elName, data) {
+        const tbody = $(elName); if (!tbody) return;
+        if (data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4" style="color: var(--ink-soft); font-family: 'Amiri', serif;">ابدأ التجربة لرؤية القيم</td></tr>`; return; }
+        const visible = data.slice(-20);
+        let html = '';
+        visible.forEach((row, i) => {
+            const isLatest = i === visible.length - 1;
+            const yStr = !isFinite(row.y) ? '—' : (Math.abs(row.y) > 999 ? row.y.toExponential(2) : row.y.toFixed(4));
+            const distStr = row.dist < 0.0001 ? row.dist.toExponential(2) : row.dist.toFixed(4);
+            html += `<tr class="${isLatest ? 'latest' : ''}"><td>${row.step}</td><td>${row.x.toFixed(4)}</td><td>${yStr}</td><td>${distStr}</td></tr>`;
+        });
+        tbody.innerHTML = html;
+        const scroll = tbody.closest('.table-scroll'); if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    }
+
+    function clearTable() { state.tableRight = []; state.tableLeft = []; renderTable(); }
+
+    function updateLimitDisplay() {
+      if (stage === 3 || stage === 5) return;
+      const fdata = getCurrentFunctionData();
+      const el = $('limit-katex'); const verdict = $('limit-verdict'); const box = $('limit-box');
+      const lhopitalBtn = $('apply-lhopital');
+      const comparisonBtn = $('toggle-comparison');
+      let latex;
+      let targetPointStr = state.isInfinity ? (state.infinitySign > 0 ? '+\\infty' : '-\\infty') : state.approachPoint;
+      if (stage === 4 && labMode === 'sequence') {
+        box.classList.remove('indeterminate-alert');
+        latex = `\\lim_{n \\to \\infty} u_n = ${fdata.limit}`;
+        try { katex.render(latex, el, { throwOnError: false }); } catch(e) { el.textContent = latex; }
+        verdict.innerHTML = `متتالية: N=${state.currentN} <span class="indicator"></span>`;
+        if (comparisonBtn) comparisonBtn.style.display = 'none';
+        return;
+      }
+      const isIndeterminate = fdata.indeterminate && (
+        (!state.isInfinity && Math.abs(state.approachPoint - fdata.defaultApproach) < 0.01) ||
+        (state.isInfinity && fdata.indeterminateAtInfinity === true)
+      );
+      if (isIndeterminate && fdata.lhopital && lhopitalBtn) lhopitalBtn.style.display = '';
+      else if (lhopitalBtn) lhopitalBtn.style.display = 'none';
+      const comparisonAvailable = (useLHopital && fdata.lhopital) || fdata.originalFn;
+      if (comparisonBtn) comparisonBtn.style.display = comparisonAvailable ? '' : 'none';
+      if (isIndeterminate && !useLHopital) {
+        box.classList.add('indeterminate-alert');
+        let formStr = fdata.indeterminate === "0/0" ? "\\frac{0}{0}" : fdata.indeterminate;
+        latex = `\\text{حالة عدم تعيين } \\left( ${formStr} \\right)`;
+        try { katex.render(latex, el, { throwOnError: false }); } catch(e) { el.textContent = latex; }
+        verdict.innerHTML = `⚠️ ${fdata.solveHint} <span class="indicator"></span>`;
+      } else {
+        box.classList.remove('indeterminate-alert');
+        latex = fdata.limitType === 'finite' ? `\\lim_{x \\to ${targetPointStr}} f(x) = ${fdata.limit}` : `\\lim_{x \\to ${targetPointStr}} f(x) = \\infty`;
+        try { katex.render(latex, el, { throwOnError: false }); } catch(e) { el.textContent = latex; }
+        verdict.innerHTML = state.step > 0 ? `مكتشفة بعد ${state.step} خطوة <span class="indicator"></span>` : 'في انتظار بدء التجربة <span class="indicator"></span>';
+      }
+    }
+
+    // ===== Epsilon-Delta Logic =====
+    function updateEpsDelta() {
+        if (stage !== 3) return;
+        const p = currentEpsPreset;
+        deltaValue = p.calcDelta(epsValue);
+        
+        const yTop = p.L + epsValue;
+        const yBot = p.L - epsValue;
+        const pyTop = sy(yTop);
+        const pyBot = sy(yBot);
+        epsRect.setAttribute('x', 0);
+        epsRect.setAttribute('y', pyTop);
+        epsRect.setAttribute('width', CFG.W);
+        epsRect.setAttribute('height', pyBot - pyTop);
+        epsRect.style.display = '';
+
+        const xLeft = p.a - deltaValue;
+        const xRight = p.a + deltaValue;
+        const pxLeft = sx(xLeft);
+        const pxRight = sx(xRight);
+        deltaRect.setAttribute('x', pxLeft);
+        deltaRect.setAttribute('y', 0);
+        deltaRect.setAttribute('width', pxRight - pxLeft);
+        deltaRect.setAttribute('height', CFG.H);
+        deltaRect.style.display = '';
+
+        $('eps-val').textContent = epsValue.toFixed(2);
+        $('delta-val').textContent = deltaValue.toFixed(4);
+        
+        let isValid = true;
+        const steps = 100;
+        for (let i = 0; i <= steps; i++) {
+            const x = xLeft + (i / steps) * (xRight - xLeft);
+            if (Math.abs(x - p.a) < 1e-6) continue;
+            const y = p.fn(x);
+            if (isFinite(y) && Math.abs(y - p.L) > epsValue) { isValid = false; break; }
+        }
+        const statusEl = $('eps-delta-status');
+        if (isValid) { statusEl.className = 'eps-delta-status success'; statusEl.textContent = 'ممتاز! δ المحسوبة صحيحة. المنحنى محصور داخل الشريط الأزرق.'; }
+        else { statusEl.className = 'eps-delta-status fail'; statusEl.textContent = 'خطأ رياضي! المنحنى يخرج من الشريط الأزرق.'; }
+    }
+
+    function setStatus(s) {
+      const pill = $('status-pill'); const text = $('status-text');
+      pill.className = 'status-pill ' + s;
+      text.textContent = s === 'running' ? 'يعمل' : s === 'paused' ? 'متوقّف مؤقتًا' : 'جاهز';
+    }
+
+    function educationalStep() {
+      let newX;
+      if (state.isInfinity) {
+        let baseX = Math.abs(state.currentX); if (baseX < 1) baseX = 1;
+        newX = state.infinitySign * (baseX * 2);
+      } else {
+        let dist = state.currentX - state.approachPoint;
+        if (state.direction === 'both') {
+          if (Math.abs(dist) < 1e-6) dist = 2;
+          state.sideToggle = (state.sideToggle + 1) % 2;
+          const sign = state.sideToggle === 0 ? 1 : -1;
+          newX = state.approachPoint + sign * Math.abs(dist) / 2;
+        } else if (state.direction === 'right') {
+          if (dist <= 0) newX = state.approachPoint + Math.max(Math.abs(dist), 1) / 2;
+          else newX = state.approachPoint + dist / 2;
+        } else if (state.direction === 'left') {
+          if (dist >= 0) newX = state.approachPoint - Math.max(Math.abs(dist), 1) / 2;
+          else newX = state.approachPoint + dist / 2;
+        }
+        if (Math.abs(newX - state.approachPoint) < 1e-7) { pause(); setStatus('idle'); $('status-text').textContent = 'اكتملت التجربة'; return; }
+      }
+      state.currentX = newX; state.step++;
+      addTrail(newX);
+      if (state.direction === 'left') addTableRow(newX, 'left');
+      else if (state.direction === 'right') addTableRow(newX, 'right');
+      else addTableRow(newX, 'both');
+      updatePointP(); updateLimitDisplay();
+    }
+
+    function start() {
+      if (state.isRunning) return;
+      if (state.step === 0) {
+        if (state.isInfinity) state.currentX = state.infinitySign * 1;
+        else {
+          if (state.direction === 'left') state.currentX = state.approachPoint - 2;
+          else if (state.direction === 'right') state.currentX = state.approachPoint + 2;
+          else state.currentX = state.approachPoint + 2;
+        }
+        clearTrail(); clearTable(); updatePointP();
+      }
+      state.isRunning = true; setStatus('running');
+      $('start-btn').disabled = true; $('pause-btn').disabled = false;
+      const interval = Math.max(150, 1100 - state.speed * 100);
+      state.timer = setInterval(educationalStep, interval);
+    }
+
+    function pause() {
+      if (!state.isRunning) return;
+      state.isRunning = false; clearInterval(state.timer); state.timer = null;
+      setStatus('paused'); $('start-btn').disabled = false; $('pause-btn').disabled = true;
+    }
+
+    function reset() {
+      pause();
+      if (!state.isInfinity) {
+        if (state.direction === 'left') state.currentX = state.approachPoint - 2;
+        else state.currentX = state.approachPoint + 2;
+      } else { state.currentX = state.infinitySign * 1; }
+      state.step = 0; state.sideToggle = 0;
+      clearTrail(); clearTable();
+      resetView();
+      setStatus('idle');
+    }
+
+    function applyCustomFunction() {
+      const expr = $('custom-fn-input').value || '(2*x+1)/(x-3)';
+      try {
+        const safeExpr = expr.replace(/\^/g, '**').replace(/pi/gi, 'Math.PI').replace(/sin/gi, 'Math.sin').replace(/cos/gi, 'Math.cos').replace(/tan/gi, 'Math.tan').replace(/sqrt/gi, 'Math.sqrt').replace(/abs/gi, 'Math.abs').replace(/log/gi, 'Math.log');
+        const fn = new Function('x', `return ${safeExpr};`);
+        const testVal = fn(1.5);
+        if (typeof testVal !== 'number') throw new Error("Invalid");
+        functions['custom'] = {
+          label: 'دالة مخصصة', displayLatex: `f(x) = ${expr}`, fn: fn,
+          dfn: x => { const h = 1e-5; const v1 = fn(x + h); const v2 = fn(x - h); if(!isFinite(v1) || !isFinite(v2)) return NaN; return (v1 - v2) / (2 * h); },
+          defaultApproach: state.isInfinity ? 0 : 1, defaultX: state.isInfinity ? 10 : 3,
+          hole: null, limit: '?', limitType: 'finite', asymptotes: [],
+          explanation: 'دالة مخصصة أدخلها المستخدم.', solveMethod: 'التحليل التلقائي غير متاح للدوال المخصصة.'
+        };
+        state.currentFn = 'custom'; useLHopital = false;
+        reset(); resetView();
+      } catch (e) { alert("صيغة غير صالحة. استخدم: x^2, sin(x), sqrt(x), (2*x+1)/(x-3)"); }
+    }
+
+    function setInfinity(sign) {
+      pause(); state.isInfinity = true; state.infinitySign = sign; state.currentX = sign * 10; state.step = 0;
+      clearTrail(); clearTable(); resetView();
+      if ($('inf-left-btn')) $('inf-left-btn').classList.toggle('warning', sign === -1);
+      if ($('inf-right-btn')) $('inf-right-btn').classList.toggle('warning', sign === 1);
+      updateApproachPoint(); updatePointP(); updateLimitDisplay(); setStatus('idle');
+    }
+
+    function toggleZoom() {
+      if (state.isInfinity) return;
+      const zoomed = CFG.unit > 100;
+      if (!zoomed) {
+        CFG.unit = 200;
+        // التكبير يتمحور حول نقطة عدم التعيين/النهاية عند x = a
+        state.viewCx = state.approachPoint;
+        const L = getTargetLimit();
+        state.viewCy = L !== null ? L : 0;
+        recalculateView();
+        redrawAll();
+      } else {
+        resetView();
+      }
+    }
+
+    function escapeHtml(text) { if (!text) return ''; return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    // ===== Event Listeners =====
+    // Click vs Drag logic for lines
+    svg.addEventListener('click', (e) => {
+      if (hasDragged) { hasDragged = false; return; }
+      const target = e.target;
+      if (target.classList.contains('clickable-svg')) showLineDetails(getCurrentFunctionData(), target.dataset.line, target.dataset.val, target.dataset, state);
+    });
+
+    // Approach Point Dragging
+    let dragging = false;
+    if (approachPoint) { approachPoint.addEventListener('mousedown', startDrag); approachPoint.addEventListener('touchstart', startDrag, { passive: false }); }
+    function startDrag(e) {
+      e.preventDefault(); e.stopPropagation();
+      dragging = true; hasDragged = false;
+      document.body.style.cursor = 'ew-resize';
+    }
+    function doDrag(clientX) {
+      if (!dragging) return;
+      hasDragged = true;
+      const rect = svg.getBoundingClientRect();
+      const px = ((clientX - rect.left) / rect.width) * CFG.W;
+      let x = ix(px);
+      x = Math.max(CFG.xMin + 0.5, Math.min(CFG.xMax - 0.5, x));
+      x = Math.round(x * 10) / 10;
+      state.approachPoint = x; state.isInfinity = false;
+      updateApproachPoint();
+    }
+
+    // Graph Panning
+    function startPan(e) {
+      e.preventDefault();
+      hasDragged = false;
+      const isTouch = e.type === 'touchstart';
+      const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+      const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+      panState = { active: true, startX: clientX, startY: clientY, startViewCx: state.viewCx, startViewCy: state.viewCy };
+      document.body.style.cursor = 'grabbing';
+    }
+    function doPan(clientX, clientY) {
+      if (!panState.active) return;
+      const dx = clientX - panState.startX;
+      const dy = clientY - panState.startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged = true;
+      if (hasDragged) {
+        const rect = svg.getBoundingClientRect();
+        const dxSvg = (dx / rect.width) * CFG.W;
+        const dySvg = (dy / rect.height) * CFG.H;
+        state.viewCx = panState.startViewCx - dxSvg / CFG.unit;
+        state.viewCy = panState.startViewCy + dySvg / CFG.unit;
+        recalculateView();
+        redrawAll();
+      }
+    }
+
+    // Global mouse/touch handlers
+    svg.addEventListener('mousedown', startPan);
+    svg.addEventListener('touchstart', startPan, { passive: false });
+
+    document.addEventListener('mousemove', e => {
+      if (dragging) doDrag(e.clientX);
+      else if (panState.active) doPan(e.clientX, e.clientY);
+    });
+    document.addEventListener('touchmove', e => {
+      if (dragging && e.touches[0]) { doDrag(e.touches[0].clientX); e.preventDefault(); }
+      else if (panState.active && e.touches[0]) { doPan(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
+    }, { passive: false });
+
+    document.addEventListener('mouseup', () => {
+      if (dragging) { dragging = false; document.body.style.cursor = ''; }
+      if (panState.active) { panState.active = false; document.body.style.cursor = ''; }
+    });
+    document.addEventListener('touchend', () => {
+      dragging = false; panState.active = false;
+    });
+
+    // Wheel Zoom
+    svg.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      const mx = ((e.clientX - rect.left) / rect.width) * CFG.W;
+      const my = ((e.clientY - rect.top) / rect.height) * CFG.H;
+      
+      const mathX = ix(mx);
+      const mathY = (CFG.cy - my) / CFG.unit;
+      
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      let newUnit = CFG.unit * zoomFactor;
+      newUnit = Math.max(15, Math.min(500, newUnit));
+      CFG.unit = newUnit;
+      
+      state.viewCx = mathX + (CFG.W / 2 - mx) / CFG.unit;
+      state.viewCy = mathY + (my - CFG.H / 2) / CFG.unit;
+      
+      recalculateView();
+      redrawAll();
+    }, { passive: false });
+
+    // Other UI listeners
+    if ($('approach-slider')) $('approach-slider').addEventListener('input', e => { state.isInfinity = false; state.approachPoint = parseFloat(e.target.value); updateApproachPoint(); });
+    if ($('inf-left-btn')) $('inf-left-btn').addEventListener('click', () => setInfinity(-1));
+    if ($('inf-right-btn')) $('inf-right-btn').addEventListener('click', () => setInfinity(1));
+    if ($('start-btn')) $('start-btn').addEventListener('click', start);
+    if ($('pause-btn')) $('pause-btn').addEventListener('click', pause);
+    if ($('reset-btn')) $('reset-btn').addEventListener('click', reset);
+    if ($('speed-slider')) $('speed-slider').addEventListener('input', e => {
+      state.speed = parseInt(e.target.value); $('speed-val').textContent = '×' + state.speed;
+      if (state.isRunning) { clearInterval(state.timer); const interval = Math.max(150, 1100 - state.speed * 100); state.timer = setInterval(educationalStep, interval); }
+    });
+    container.querySelectorAll('.dir-btn[data-dir]').forEach(b => b.addEventListener('click', () => {
+      if (b.disabled) return;
+      state.direction = b.dataset.dir;
+      container.querySelectorAll('.dir-btn[data-dir]').forEach(btn => btn.classList.toggle('active', btn.dataset.dir === b.dataset.dir));
+    }));
+
+    container.querySelectorAll('[data-ind-id]').forEach(btn => btn.addEventListener('click', () => {
+      const preset = indeterminate_presets.find(p => p.id === btn.dataset.indId);
+      if (preset) setIndeterminatePreset(preset);
+    }));
+
+    container.querySelectorAll('[data-cont-id]').forEach(btn => btn.addEventListener('click', () => {
+      const preset = continuity_presets.find(p => p.id === btn.dataset.contId);
+      if (preset) setContinuityPreset(preset);
+    }));
+
+    if ($('zoom-btn')) $('zoom-btn').addEventListener('click', toggleZoom);
+    if ($('apply-custom-fn')) $('apply-custom-fn').addEventListener('click', applyCustomFunction);
+
+    // Settings gear: show/hide all buttons & sliders of this lab
+    const settingsToggle = $('settings-toggle');
+    if (settingsToggle) {
+      settingsToggle.addEventListener('click', () => {
+        const willShow = container.querySelector('.lab-ctrl.controls-hidden') !== null;
+        container.querySelectorAll('.lab-ctrl').forEach(el => el.classList.toggle('controls-hidden', !willShow));
+        settingsToggle.classList.toggle('active', willShow);
+        settingsToggle.title = willShow ? 'إخفاء أدوات التحكم' : 'إظهار أدوات التحكم';
+      });
+    }
+    
+    if ($('toggle-tangent')) $('toggle-tangent').addEventListener('click', () => {
+        showTangent = !showTangent;
+        $('toggle-tangent').classList.toggle('btn-primary', showTangent);
+        $('toggle-tangent').classList.toggle('btn-ghost', !showTangent);
+        updatePointP();
+    });
+
+    if ($('apply-lhopital')) $('apply-lhopital').addEventListener('click', () => {
+        useLHopital = !useLHopital;
+        $('apply-lhopital').textContent = useLHopital ? 'إلغاء قاعدة لوبيتال' : 'تطبيق قاعدة لوبيتال';
+        reset(); resetView();
+    });
+
+    if ($('toggle-comparison')) $('toggle-comparison').addEventListener('click', () => {
+        showComparison = !showComparison;
+        $('toggle-comparison').classList.toggle('btn-primary', showComparison);
+        $('toggle-comparison').classList.toggle('btn-ghost', !showComparison);
+        drawComparison();
+    });
+
+    // Stage 3 (Epsilon-Delta) Listeners
+    if (stage === 3) {
+      container.querySelectorAll('[data-eps-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          container.querySelectorAll('[data-eps-id]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentEpsPreset = eps_presets.find(p => p.id === btn.dataset.epsId);
+          state.approachPoint = currentEpsPreset.a;
+          reset(); resetView();
+        });
+      });
+      $('eps-slider').addEventListener('input', e => {
+        epsValue = parseFloat(e.target.value);
+        updateEpsDelta();
+      });
+    }
+
+    // Stage 4 (Comp/Sandwich) Listeners
+    if (stage === 4) {
+      $('mode-btn-comp').addEventListener('click', () => {
+        seqPause();
+        labMode = 'composition';
+        $('mode-btn-comp').classList.remove('btn-ghost'); $('mode-btn-comp').classList.add('btn-primary');
+        $('mode-btn-sand').classList.remove('btn-primary'); $('mode-btn-sand').classList.add('btn-ghost');
+        $('mode-btn-seq').classList.remove('btn-primary'); $('mode-btn-seq').classList.add('btn-ghost');
+        $('comp-ui').style.display = ''; $('sand-ui').style.display = 'none'; $('seq-ui').style.display = 'none';
+        if ($('ux-row')) $('ux-row').style.display = 'flex';
+        if ($('seq-n-row')) $('seq-n-row').style.display = 'none';
+        reset(); resetView(); updateComposedLatex();
+      });
+      $('mode-btn-sand').addEventListener('click', () => {
+        seqPause();
+        labMode = 'sandwich';
+        $('mode-btn-sand').classList.remove('btn-ghost'); $('mode-btn-sand').classList.add('btn-primary');
+        $('mode-btn-comp').classList.remove('btn-primary'); $('mode-btn-comp').classList.add('btn-ghost');
+        $('mode-btn-seq').classList.remove('btn-primary'); $('mode-btn-seq').classList.add('btn-ghost');
+        $('comp-ui').style.display = 'none'; $('sand-ui').style.display = ''; $('seq-ui').style.display = 'none';
+        if ($('ux-row')) $('ux-row').style.display = 'none';
+        if ($('seq-n-row')) $('seq-n-row').style.display = 'none';
+        state.isInfinity = currentSandwich.isInfinity || false;
+        state.approachPoint = currentSandwich.defaultApproach || 0;
+        if (state.isInfinity) state.infinitySign = currentSandwich.infinitySign || 1;
+        reset(); resetView(); updateSandwichLatex();
+      });
+      $('mode-btn-seq').addEventListener('click', () => {
+        labMode = 'sequence';
+        $('mode-btn-seq').classList.remove('btn-ghost'); $('mode-btn-seq').classList.add('btn-primary');
+        $('mode-btn-comp').classList.remove('btn-primary'); $('mode-btn-comp').classList.add('btn-ghost');
+        $('mode-btn-sand').classList.remove('btn-primary'); $('mode-btn-sand').classList.add('btn-ghost');
+        $('comp-ui').style.display = 'none'; $('sand-ui').style.display = 'none'; $('seq-ui').style.display = '';
+        if ($('ux-row')) $('ux-row').style.display = 'none';
+        if ($('seq-n-row')) $('seq-n-row').style.display = 'flex';
+        state.isInfinity = false;
+        state.approachPoint = 0;
+        state.currentN = 1;
+        state.currentX = 1;
+        if ($('approach-slider')) $('approach-slider').value = 0;
+        reset(); resetView(); updateSequenceLatex();
+      });
+      container.querySelectorAll('[data-u-id]').forEach(btn => btn.addEventListener('click', () => {
+        container.querySelectorAll('[data-u-id]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentU = u_options.find(u => u.id === btn.dataset.uId);
+        state.approachPoint = currentU.defaultA; state.isInfinity = false;
+        if ($('approach-slider')) $('approach-slider').value = state.approachPoint;
+        updateComposedLatex(); reset(); resetView();
+      }));
+      container.querySelectorAll('[data-v-id]').forEach(btn => btn.addEventListener('click', () => {
+        container.querySelectorAll('[data-v-id]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentV = v_options.find(v => v.id === btn.dataset.vId);
+        updateComposedLatex(); reset(); resetView();
+      }));
+      if ($('toggle-components')) $('toggle-components').addEventListener('click', () => { showComponents = !showComponents; drawComponents(); });
+      container.querySelectorAll('[data-sand-id]').forEach(btn => btn.addEventListener('click', () => {
+        container.querySelectorAll('[data-sand-id]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSandwich = sandwich_presets.find(s => s.id === btn.dataset.sandId);
+        state.isInfinity = currentSandwich.isInfinity || false;
+        state.approachPoint = currentSandwich.defaultApproach || 0;
+        if (state.isInfinity) state.infinitySign = currentSandwich.infinitySign || 1;
+        updateSandwichLatex(); reset(); resetView();
+      }));
+
+      container.querySelectorAll('[data-seq-id]').forEach(btn => btn.addEventListener('click', () => {
+        container.querySelectorAll('[data-seq-id]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSequence = sequence_presets.find(s => s.id === btn.dataset.seqId);
+        state.currentN = 1;
+        if ($('seq-n-slider')) $('seq-n-slider').value = 1;
+        if ($('seq-n-val')) $('seq-n-val').textContent = 'N = 1';
+        updateSequenceLatex(); reset(); resetView();
+      }));
+
+      if ($('seq-n-slider')) $('seq-n-slider').addEventListener('input', e => {
+        state.currentN = parseInt(e.target.value);
+        state.currentX = state.currentN;
+        if ($('seq-n-val')) $('seq-n-val').textContent = 'N = ' + state.currentN;
+        drawFunctionCurve(); drawBounds(); updatePointP();
+      });
+
+      let seqTimer = null;
+      function seqPause() { if (!seqTimer) return; clearInterval(seqTimer); seqTimer = null; if ($('seq-start-btn')) $('seq-start-btn').disabled = false; if ($('seq-pause-btn')) $('seq-pause-btn').disabled = true; }
+      function seqStep() {
+        if (state.currentN < currentSequence.nMax) {
+          state.currentN++;
+          state.currentX = state.currentN;
+          if ($('seq-n-slider')) $('seq-n-slider').value = state.currentN;
+          if ($('seq-n-val')) $('seq-n-val').textContent = 'N = ' + state.currentN;
+          drawFunctionCurve(); drawBounds(); updatePointP();
+        } else {
+          seqPause();
+        }
+      }
+      function seqStart() { if (seqTimer) return; seqTimer = setInterval(seqStep, Math.max(150, 1100 - state.speed * 100)); if ($('seq-start-btn')) $('seq-start-btn').disabled = true; if ($('seq-pause-btn')) $('seq-pause-btn').disabled = false; }
+      function seqReset() { seqPause(); state.currentN = 1; state.currentX = 1; if ($('seq-n-slider')) $('seq-n-slider').value = 1; if ($('seq-n-val')) $('seq-n-val').textContent = 'N = 1'; drawFunctionCurve(); drawBounds(); updatePointP(); }
+      if ($('seq-start-btn')) $('seq-start-btn').addEventListener('click', seqStart);
+      if ($('seq-pause-btn')) $('seq-pause-btn').addEventListener('click', seqPause);
+      if ($('seq-reset-btn')) $('seq-reset-btn').addEventListener('click', seqReset);
+    }
+
+    svg.addEventListener('mousemove', e => {
+      const rect = svg.getBoundingClientRect();
+      const px = ((e.clientX - rect.left) / rect.width) * CFG.W;
+      const py = ((e.clientY - rect.top) / rect.height) * CFG.H;
+      const x = ix(px); const y = (CFG.cy - py) / CFG.unit;
+      $('cursor-coord').textContent = `x = ${x.toFixed(2)} , y = ${y.toFixed(2)}`;
+    });
+    svg.addEventListener('mouseleave', () => $('cursor-coord').textContent = 'x = — , y = —');
+
+    svg.addEventListener('keydown', (e) => {
+      if (stage === 3) {
+        if (e.key === 'ArrowUp') { epsValue = Math.min(3, epsValue + 0.1); updateEpsDelta(); e.preventDefault(); }
+        if (e.key === 'ArrowDown') { epsValue = Math.max(0.1, epsValue - 0.1); updateEpsDelta(); e.preventDefault(); }
+        return;
+      }
+      if (state.isInfinity) return;
+      const step = e.shiftKey ? 1 : 0.1;
+      const inc = document.dir === 'rtl' ? -step : step;
+      if (e.key === 'ArrowRight') { state.approachPoint = Math.round((state.approachPoint + inc) * 10) / 10; recenterOnApproach(); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { state.approachPoint = Math.round((state.approachPoint - inc) * 10) / 10; recenterOnApproach(); e.preventDefault(); }
+    });
+
+    // ===== Initialize =====
+    centerView();
+    recalculateView();
+    buildGrid();
+    if (stage === 4) { updateComposedLatex(); updateSequenceLatex(); }
+    drawFunctionCurve();
+    drawBounds();
+    drawAsymptotes();
+    drawHoles();
+    drawComparison();
+    updateApproachPoint();
+    if (stage === 1 || stage === 2) applyDirectionEnforcement();
+    if (stage === 3) updateEpsDelta();
+    setStatus('idle');
+    
+    setTimeout(() => {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(container, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+      }
+    }, 100);
+  }
+
+  // ===== Initialize all 5 labs =====
+  function init() {
+    createLab(document.getElementById('lab-container-1'), 1);
+    createLab(document.getElementById('lab-container-2'), 2);
+    createLab(document.getElementById('lab-container-3'), 3);
+    createLab(document.getElementById('lab-container-4'), 4);
+    createLab(document.getElementById('lab-container-5'), 5);
+
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+    }
+  }
+
+  if (typeof katex !== 'undefined' && typeof renderMathInElement !== 'undefined') init();
+  else setTimeout(init, 300);
+})();
+</script>
+</body>
+</html>
