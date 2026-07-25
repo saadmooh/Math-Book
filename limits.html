@@ -200,6 +200,10 @@
   .eps-delta-status.success { background: rgba(31, 107, 76, 0.15); color: var(--green); border: 1px solid var(--green); }
   .eps-delta-status.fail { background: rgba(192, 57, 43, 0.15); color: var(--warning); border: 1px solid var(--warning); }
 
+  .solution-step { transition: all 0.2s ease; }
+  .solution-step.active-step { background: var(--paper-warm); border-right: 4px solid var(--orange); }
+  .solution-step.hidden { display: none; }
+
   input[type="range"].speed-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: rgba(10, 30, 63, 0.2); outline: none; border-radius: 2px; }
   input[type="range"].speed-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: var(--orange); cursor: pointer; border-radius: 50%; border: 2px solid var(--paper-warm); box-shadow: 0 1px 4px rgba(10, 30, 63, 0.3); }
   input[type="range"].speed-slider::-moz-range-thumb { width: 18px; height: 18px; background: var(--orange); cursor: pointer; border-radius: 50%; border: 2px solid var(--paper-warm); }
@@ -2537,6 +2541,57 @@
       }, 50);
     }
 
+    function solutionStepsHTML(steps) {
+      return `
+        <div class="card p-5 mt-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)]" data-el="solution-panel">
+          <button data-el="solution-toggle" class="btn-action btn-ghost w-full justify-between text-sm" type="button">
+            <span class="font-display font-bold">خطوات الحل التفاعلية</span>
+            <span data-el="solution-arrow">▶</span>
+          </button>
+          <div data-el="solution-content" style="display:none;" class="mt-4">
+            <div data-el="steps-container" class="space-y-3">
+              ${steps.map((s, i) => `
+                <div data-step="${i}" class="solution-step p-3 rounded border border-[rgba(10,30,63,0.08)] ${i === 0 ? 'active-step' : 'hidden'}">
+                  <div class="meta-text mb-2" style="color: var(--orange);">الخطوة ${i+1}</div>
+                  <div class="font-serif text-base leading-relaxed mb-2">${s.math}</div>
+                  <p class="font-serif text-sm text-[var(--ink-soft)] m-0">${s.text}</p>
+                </div>
+              `).join('')}
+            </div>
+            <button data-el="next-step-btn" class="btn-action btn-primary text-sm w-full mt-4" type="button">الخطوة التالية</button>
+          </div>
+        </div>
+      `;
+    }
+    function initSolutionPanel(steps) {
+      const toggle = $('solution-toggle');
+      const content = $('solution-content');
+      const arrow = $('solution-arrow');
+      const nextBtn = $('next-step-btn');
+      const stepDivs = container.querySelectorAll('[data-step]');
+      if (!toggle || !nextBtn) return;
+      let revealed = 1;
+      function updateSteps() {
+        stepDivs.forEach((div, i) => {
+          div.classList.toggle('hidden', i >= revealed);
+          div.classList.toggle('active-step', i === revealed - 1);
+        });
+        nextBtn.disabled = revealed >= steps.length;
+        nextBtn.textContent = revealed >= steps.length ? 'اكتمل الحل ✓' : 'الخطوة التالية';
+        renderMathInContainer();
+      }
+      toggle.addEventListener('click', () => {
+        const showing = content.style.display !== 'none';
+        content.style.display = showing ? 'none' : 'block';
+        arrow.textContent = showing ? '▶' : '▼';
+        if (!showing) renderMathInContainer();
+      });
+      nextBtn.addEventListener('click', () => {
+        if (revealed < steps.length) { revealed++; updateSteps(); }
+      });
+      updateSteps();
+    }
+
     function bindCursor(svg) {
       svg.addEventListener('mousemove', e => {
         const rect = svg.getBoundingClientRect();
@@ -2551,6 +2606,12 @@
     if (stage === 'ex1') {
       const a = 2, L = 7, fn = x => 2*x + 3;
       let alpha = 0.5, xVal = 2.5;
+      const ex1Steps = [
+        { math: `$$\\lim_{x \\to 2} (2x+3) = 2 \\cdot 2 + 3 = 7$$`, text: 'التعويض المباشر صالح لأن الدالة كثيرة حدود.' },
+        { math: `$$= 4 + 3 = 7$$`, text: 'إذن النهاية تساوي 7.' },
+        { math: `$$|2x+3 - 7| < \\alpha \\implies |2x-4| < \\alpha \\implies |x-2| < \\frac{\\alpha}{2}$$`, text: 'نختار δ = α/2 فتكون x في الفترة ]2−δ, 2+δ[.' },
+        { math: `$$\\alpha = 0.01 \\implies \\delta = 0.005,\\quad x \\in ]1.995,\\ 2.005[$$`, text: 'عند α = 0.01 تحصل على الفترة المطلوبة حول 2.' }
+      ];
       container.innerHTML = baseHTML('التمرين 01: التخمين الديناميكي للنهاية', `
         <div class="grid md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -2574,6 +2635,7 @@
           <div class="info-row"><span class="info-label">δ المطلوبة (|x−2| < δ)</span><span class="info-value" style="color:var(--orange)" data-el="delta-disp">—</span></div>
           <div data-el="status" class="eps-delta-status success">—</div>
         </div>
+        ${solutionStepsHTML(ex1Steps)}
       `);
       centerOn(a, L, 80);
       function drawEx1() {
@@ -2597,6 +2659,7 @@
       $('alpha-slider').addEventListener('input', e => { alpha = parseFloat(e.target.value); drawEx1(); });
       $('zoom-btn').addEventListener('click', () => { centerOn(a, L, 20000); drawEx1(); });
       $('reset-btn').addEventListener('click', () => { centerOn(a, L, 80); drawEx1(); });
+      initSolutionPanel(ex1Steps);
       bindCursor($('svg'));
       drawEx1();
     }
@@ -2604,6 +2667,12 @@
       const fn = x => 2*x - 1 - 2/(x*x + 1);
       const asym = x => 2*x - 1;
       let sign = null;
+      const ex2Steps = [
+        { math: `$$f(x) - (2x-1) = -\\frac{2}{x^2+1}$$`, text: 'اطرح معادلة المقارب من الدالة.' },
+        { math: `$$\\lim_{x \\to \\pm\\infty} \\left(-\\frac{2}{x^2+1}\\right) = 0$$`, text: 'بسط ثابت ومقام يتزايد لانهائياً.' },
+        { math: `$$y = 2x-1 \\text{ مقارب مائل}$$`, text: 'لأن الفرق بين المنحنى والمستقيم يقترب من الصفر.' },
+        { math: `$$x^2+1 > 0 \\implies -\\frac{2}{x^2+1} < 0$$`, text: 'المنحنى دائماً أسفل المقارب Δ لكل x.' }
+      ];
       container.innerHTML = baseHTML('التمرين 02: المستقيم المقارب المائل', `
         <p class="font-serif text-sm mb-3">اختر إشارة الفرق $f(x) - (2x-1)$ في الفترة المعنية:</p>
         <div class="flex flex-wrap gap-2 mb-4">
@@ -2615,6 +2684,7 @@
         <div class="mt-4 p-3 bg-[var(--paper-cool)] text-center">
           $$f(x) - (2x-1) = -\frac{2}{x^2+1} \to 0 \text{ عند } x \to \pm\infty$$
         </div>
+        ${solutionStepsHTML(ex2Steps)}
       `);
       centerOn(0, 0, 30);
       function drawEx2() {
@@ -2655,12 +2725,19 @@
       $('btn-pos').addEventListener('click', () => pick('pos'));
       $('btn-neg').addEventListener('click', () => pick('neg'));
       $('btn-zero').addEventListener('click', () => pick('zero'));
+      initSolutionPanel(ex2Steps);
       bindCursor($('svg'));
       drawEx2();
     }
     else if (stage === 'ex3') {
       const fn = x => 1 + 1/Math.sqrt(Math.abs(x));
       let side = 'both';
+      const ex3Steps = [
+        { math: `$$x>0: f(x)=1+\\frac{1}{\\sqrt{x}},\\quad x<0: f(x)=1+\\frac{1}{\\sqrt{-x}}$$`, text: 'نفكّك القيمة المطلقة حسب إشارة x.' },
+        { math: `$$\\lim_{x \\to +\\infty} \\frac{1}{\\sqrt{x}} = 0 \\implies \\lim_{x \\to +\\infty} f(x) = 1$$`, text: 'النهاية عند اللانهاية الموجبة.' },
+        { math: `$$\\lim_{x \\to -\\infty} \\frac{1}{\\sqrt{-x}} = 0 \\implies \\lim_{x \\to -\\infty} f(x) = 1$$`, text: 'النهاية عند اللانهاية السالبة.' },
+        { math: `$$\\frac{1}{\\sqrt{|x|}} > 0 \\implies f(x) > 1$$`, text: 'المنحنى دائماً فوق المقارب الأفقي y=1.' }
+      ];
       container.innerHTML = baseHTML('التمرين 03: المقارب الأفقي من الجهتين', `
         <div class="flex flex-wrap gap-2 mb-4">
           <button data-el="btn-both" class="btn-action btn-primary text-sm flex-1">الجهتين</button>
@@ -2670,6 +2747,7 @@
         <div class="bg-[var(--paper-cool)] p-3 text-center">
           $f(x) = 1 + \frac{1}{\sqrt{|x|}} \ge 1$ دائماً، والنهاية عند $\pm\infty$ هي $1$.
         </div>
+        ${solutionStepsHTML(ex3Steps)}
       `);
       centerOn(0, 1.5, 25);
       function drawEx3() {
@@ -2692,12 +2770,19 @@
       $('btn-both').addEventListener('click', () => setSide('both'));
       $('btn-pos').addEventListener('click', () => setSide('pos'));
       $('btn-neg').addEventListener('click', () => setSide('neg'));
+      initSolutionPanel(ex3Steps);
       bindCursor($('svg'));
       drawEx3();
     }
     else if (stage === 'ex4') {
       const fn = x => (Math.abs(x) < 1e-12 ? NaN : Math.sin(x)/x) - x + 1;
       let zoom = 1, animId = null, t = 0;
+      const ex4Steps = [
+        { math: `$$f(x) - (-x+1) = \\frac{\\sin x}{x}$$`, text: 'اطرح معادلة المقارب من الدالة.' },
+        { math: `$$\\lim_{x \\to \\pm\\infty} \\frac{\\sin x}{x} = 0$$`, text: 'بسط محدود بين −1 و 1 ومقام يتجه للانهاية.' },
+        { math: `$$y = -x+1 \\text{ مقارب مائل}$$`, text: 'لأن الفرق يقترب من الصفر عند اللانهاية.' },
+        { math: `$$-\\frac{1}{x} \\le \\frac{\\sin x}{x} \\le \\frac{1}{x}$$`, text: 'التذبذب يضمحل والمنحنى يقطع المقارب بلا نهاية.' }
+      ];
       container.innerHTML = baseHTML('التمرين 04: تذبذب يضمحل حول مقارب مائل', `
         <div class="flex flex-wrap gap-2 mb-4">
           <button data-el="zoom-in" class="btn-action btn-secondary text-sm">تكبير 🔍+</button>
@@ -2707,6 +2792,7 @@
         <div class="bg-[var(--paper-cool)] p-3 text-center">
           $f(x) - (-x+1) = \frac{\sin x}{x} \to 0$ عند $x \to \pm\infty$.
         </div>
+        ${solutionStepsHTML(ex4Steps)}
       `);
       centerOn(0, 1, 25);
       function drawEx4() {
@@ -2730,6 +2816,7 @@
         function frame() { t += 0.03; drawEx4(); animId = requestAnimationFrame(frame); }
         frame();
       });
+      initSolutionPanel(ex4Steps);
       bindCursor($('svg'));
       drawEx4();
     }
@@ -2737,6 +2824,13 @@
       const a = 4, L = 3, eps = 0.05;
       const fn = x => (Math.abs(x - 2) < 1e-12 ? NaN : (x + 2)/(x - 2));
       let xVal = 4.2;
+      const ex5Steps = [
+        { math: `$$\\lim_{x \\to 4} \\frac{x+2}{x-2} = \\frac{6}{2} = 3$$`, text: 'التعويض المباشر يعطي النهاية 3.' },
+        { math: `$$|f(x) - 3| < 0.05$$`, text: 'نريد أن تبقى f(x) داخل الفترة ]2.95, 3.05[.' },
+        { math: `$$f(x)-3 = \\frac{x+2}{x-2} - 3 = \\frac{-2x+8}{x-2} = \\frac{-2(x-4)}{x-2}$$`, text: 'اختزل الفرق ليظهر العامل (x−4).' },
+        { math: `$$|f(x)-3| = \\left|\\frac{-2(x-4)}{x-2}\\right| \\approx |x-4| \\implies \\delta \\approx 0.05$$`, text: 'بالقرب من x=4 يصبح المقام تقريباً 2.' },
+        { math: `$$x \\in ]3.95,\\ 4.05[ \\implies f(x) \\in ]2.95,\\ 3.05[$$`, text: 'تحقق من الرسم بالمنزلق.' }
+      ];
       container.innerHTML = baseHTML('التمرين 05: التحكم بالنهاية عبر ε و δ', `
         <div class="grid md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -2751,6 +2845,7 @@
           </div>
         </div>
         <div data-el="status" class="eps-delta-status fail">—</div>
+        ${solutionStepsHTML(ex5Steps)}
       `);
       centerOn(a, L, 120);
       function drawEx5() {
@@ -2771,6 +2866,7 @@
       }
       $('x-slider').addEventListener('input', e => { xVal = parseFloat(e.target.value); $('x-input').value = xVal.toFixed(3); drawEx5(); });
       $('x-input').addEventListener('input', e => { xVal = parseFloat(e.target.value) || 0; $('x-slider').value = xVal; drawEx5(); });
+      initSolutionPanel(ex5Steps);
       bindCursor($('svg'));
       drawEx5();
     }
@@ -2778,6 +2874,13 @@
       const fn = x => (x <= 2 ? NaN : -1/Math.sqrt(x - 2));
       let unit = 350/3, xA = 2.1;
       let AVal = 5;
+      const ex6Steps = [
+        { math: `$$\\text{المجال: } x-2 > 0 \\implies x > 2$$`, text: 'الجذر التربيعي يتطلب قيمة موجبة تحت الجذر.' },
+        { math: `$$x \\to 2^+ \\implies x-2 \\to 0^+ \\implies \\sqrt{x-2} \\to 0^+$$`, text: 'المقام يقترب من الصفر الموجب.' },
+        { math: `$$\\frac{1}{\\sqrt{x-2}} \\to +\\infty \\implies f(x) = -\\frac{1}{\\sqrt{x-2}} \\to -\\infty$$`, text: 'الإشارة السالبة تحول اللانهاية الموجبة إلى سالبة.' },
+        { math: `$$f(x) \\le -A \\iff x \\in \\left]2,\\ 2+\\frac{1}{A^2}\\right[$$`, text: 'لأي A>0 نجد فترة مجاورة لـ 2 من اليمين.' },
+        { math: `$$x = 2 \\text{ مقارب عمودي}$$`, text: 'النهايتان اليمنى واليسرى غير موجودتان (لانهايتان).' }
+      ];
       container.innerHTML = baseHTML('التمرين 06: انفجار إلى السالب اللانهاية', `
         <div class="flex flex-wrap gap-2 mb-4">
           <button data-el="zoom-in" class="btn-action btn-secondary text-sm">تكبير حول x=2</button>
@@ -2798,6 +2901,7 @@
           <div class="info-row"><span class="info-label">فترة x التي تحقق f(x) ≤ −A</span><span class="info-value" style="color:var(--orange)" data-el="interval-disp">—</span></div>
         </div>
         <div data-el="conclusion" class="eps-delta-status success mt-3">عند التكبير، المنحنى يهبط بلا حدود → مقارب عمودي x=2.</div>
+        ${solutionStepsHTML(ex6Steps)}
       `);
       centerOn(7, -2, 350/3);
       function drawEx6() {
@@ -2814,6 +2918,7 @@
       $('zoom-out').addEventListener('click', () => { unit /= 1.5; centerOn(7, -2, unit); drawEx6(); });
       $('a-input').addEventListener('input', e => { AVal = Math.max(0.1, parseFloat(e.target.value) || 0.1); drawEx6(); });
       $('x-slider').addEventListener('input', e => { xA = parseFloat(e.target.value); drawEx6(); });
+      initSolutionPanel(ex6Steps);
       bindCursor($('svg'));
       drawEx6();
     }
@@ -2830,6 +2935,12 @@
         { text: 'المجال: ℝ\\{1}، ثقب قابل للإزالة', target: 'g2' },
         { text: 'المجال: ℝ\\{0}، مقارب عمودي', target: 'g3' },
         { text: 'المجال: ]−2,2[، نهايات لانهائية', target: 'g4' }
+      ];
+      const ex7Steps = [
+        { math: `$$\\text{g1: دالة معرّفة على } \\mathbb{R} \\text{ بمقارب أفقي } y=2$$`, text: 'المنحنى مستمر ويقترب من خط أفقي عند اللانهاية.' },
+        { math: `$$\\text{g2: دالة كسرية بثقب عند } x=1$$`, text: 'تظهر نقطة غير معرّفة يمكن إزالتها بتبسيط الكسر.' },
+        { math: `$$\\text{g3: دالة بمقارب عمودي عند } x=0$$`, text: 'المنحنى ينفجر إلى ±∞ عندما تقترب x من 0.' },
+        { math: `$$\\text{g4: دالة على } ]-2,2[ \\text{ تهبط لل } -\\infty \\text{ عند الحدين}$$`, text: 'المجال محدود بفترتين مفتوحتين والنهايات عند الحدود لانهائية.' }
       ];
       let matches = {};
       container.innerHTML = `
@@ -2852,6 +2963,7 @@
             ${cards.map((c, i) => `<button class="chip" data-card="${c.target}" draggable="true">${c.text}</button>`).join('')}
           </div>
           <div data-el="feedback" class="eps-delta-status fail">اختر المطابقة الصحيحة.</div>
+          ${solutionStepsHTML(ex7Steps)}
         </div>
       `;
       let selectedCard = null;
@@ -2890,14 +3002,23 @@
         if (allCorrect && Object.keys(matches).length === 4) { fb.className = 'eps-delta-status success'; fb.textContent = 'أحسنت! جميع المطابقات صحيحة.'; }
         else { fb.className = 'eps-delta-status fail'; fb.textContent = 'بعض المطابقات خاطئة، حاول مرة أخرى.'; }
       }
+      initSolutionPanel(ex7Steps);
+      renderMathInContainer();
     }
     else if (stage === 'ex8') {
       const fn = x => (Math.abs(x) >= 2 ? NaN : -3/Math.sqrt(4 - x*x));
       let step = 0;
-      const steps = [
+      const quizSteps = [
         { q: 'ما نتيجة التعويض المباشر عند x = ±2؟', options: ['−3/0⁺', '0/0', '3/0⁻', 'عدد حقيقي'], correct: 0, text: 'التعويض يعطي −3/0⁺ لأن المقام يقترب من الصفر الموجب.' },
         { q: 'ما إشارة المقام √(4−x²) قرب ±2 من داخل ]−2,2[؟', options: ['سالب', 'موجب', 'صفر', 'غير معرف'], correct: 1, text: 'داخل الفترة ]−2,2[، 4−x² > 0، لذا الجذر موجب.' },
         { q: 'ما النتيجة النهائية؟', options: ['+∞', '−∞', '0', 'غير موجود'], correct: 1, text: 'بما أن البسط سالب والمقام موجب يقترب من 0، فالناتج −∞.' }
+      ];
+      const ex8Steps = [
+        { math: `$$\\text{المجال: } 4-x^2 > 0 \\implies x \\in ]-2,2[$$`, text: 'الجذر التربيعي يتطلب قيمة موجبة.' },
+        { math: `$$4-x^2 = (2-x)(2+x)$$`, text: 'عند x=2⁻: 2−x → 0⁺ و 2+x → 4.' },
+        { math: `$$x \\to 2^- \\implies 4-x^2 \\to 0^+ \\implies \\sqrt{4-x^2} \\to 0^+$$`, text: 'المقام يقترب من الصفر الموجب.' },
+        { math: `$$x \\to 2^- \\implies f(x) = \\frac{-3}{\\sqrt{4-x^2}} \\to -\\infty$$`, text: 'نفس التحليل ينطبق عند x→−2⁺.' },
+        { math: `$$x=-2 \\text{ و } x=2 \\text{ مقاربان عموديان}$$`, text: 'النهايتان عند الحدود سالبتا اللانهاية.' }
       ];
       container.innerHTML = baseHTML('التمرين 08: خطوة بخطوة نهاية لانهائية', `
         <div class="mb-3 p-3 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.1)]">
@@ -2908,6 +3029,7 @@
           <button data-el="next-btn" class="btn-action btn-primary text-sm" disabled>التالي</button>
         </div>
         <div data-el="feedback" class="eps-delta-status fail mt-3">—</div>
+        ${solutionStepsHTML(ex8Steps)}
       `);
       centerOn(0, -3, 35);
       function drawEx8() {
@@ -2916,7 +3038,7 @@
         $('lines').innerHTML = `<path class="asymptote-line" d="${vertD(-2)} ${vertD(2)}"/>`;
       }
       function showStep() {
-        const s = steps[step];
+        const s = quizSteps[step];
         if (!s) {
           setText('step-text', 'اكتمل التحليل: $\lim_{x \to -2^+} f(x) = \lim_{x \to 2^-} f(x) = -\infty$');
           setHTML('options', '');
@@ -2941,6 +3063,7 @@
         });
       }
       $('next-btn').addEventListener('click', () => { step++; showStep(); });
+      initSolutionPanel(ex8Steps);
       bindCursor($('svg'));
       drawEx8(); showStep();
     }
@@ -2949,6 +3072,12 @@
       const h = x => (Math.abs(x + 1) < 1e-12 ? NaN : 1/(x + 1));
       const g = x => (Math.abs(x + 1) < 1e-12 ? NaN : -1/(x + 1));
       let xVal = 0, animId = null;
+      const ex9Steps = [
+        { math: `$$-1 \\le \\cos(x) \\le 1$$`, text: 'دالة cos محدودة بين −1 و 1 لكل x.' },
+        { math: `$$-\\frac{1}{x+1} \\le \\frac{\\cos x}{x+1} \\le \\frac{1}{x+1}$$`, text: 'قسمة المتباينة على x+1 > 0 (لأن x→+∞).' },
+        { math: `$$\\lim_{x \\to +\\infty} -\\frac{1}{x+1} = 0, \\quad \\lim_{x \\to +\\infty} \\frac{1}{x+1} = 0$$`, text: 'نهاية الحاصرين كلتاهما صفر.' },
+        { math: `$$\\lim_{x \\to +\\infty} \\frac{\\cos x}{x+1} = 0$$`, text: 'بمبرهنة الحصر (الساندويتش) تُجبر الدالة على الصفر.' }
+      ];
       container.innerHTML = baseHTML('التمرين 09: حصر الدالة المذبذبة', `
         <div class="mb-3">
           <div class="meta-text mb-2">x → +∞</div>
@@ -2960,6 +3089,7 @@
         <div class="bg-[var(--paper-cool)] p-3 text-center">
           $-\frac{1}{x+1} \le \frac{\cos x}{x+1} \le \frac{1}{x+1}$، والحدود الحاشرة تقترب من $0$.
         </div>
+        ${solutionStepsHTML(ex9Steps)}
       `);
       centerOn(10, 0, 15);
       function drawEx9() {
@@ -2980,6 +3110,7 @@
         function frame() { xVal = Math.min(50, xVal + 0.1); $('x-slider').value = xVal; drawEx9(); if (xVal < 50) animId = requestAnimationFrame(frame); else { animId = null; setText('anim-btn','تحريك x للأمام'); } }
         frame();
       });
+      initSolutionPanel(ex9Steps);
       bindCursor($('svg'));
       drawEx9();
     }
@@ -2987,6 +3118,12 @@
       const left = x => (3*x + Math.cos(x))/x;
       const right = x => (3*x + 7)/(x - 1);
       let revealed = [false, false, false];
+      const ex10Steps = [
+        { math: `$$\\frac{3x+\\cos x}{x} = 3 + \\frac{\\cos x}{x}$$`, text: 'الحد الأيسر بعد التبسيط.' },
+        { math: `$$\\lim_{x \\to +\\infty} \\left(3 + \\frac{\\cos x}{x}\\right) = 3$$`, text: 'نهاية الحد الأيسر؛ الحد المذبذب يضمحل.' },
+        { math: `$$\\frac{3x+7}{x-1} = \\frac{3 + 7/x}{1 - 1/x} \\to 3$$`, text: 'نهاية الحد الأيمن بتقسيم البسط والمقام على x.' },
+        { math: `$$\\lim_{x \\to +\\infty} f(x) = 3$$`, text: 'بمبدأ الحصر (Sandwich) f(x) محصورة بين دالتين نهايتهما 3.' }
+      ];
       container.innerHTML = baseHTML('التمرين 10: تطبيق مبرهنة الحصر', `
         <div class="mb-4 space-y-2">
           <button data-el="stage-1" class="btn-action btn-ghost w-full text-sm justify-between"><span>المرحلة 1: نهاية الحد الأيسر</span><span data-el="arrow-1">▶</span></button>
@@ -3002,6 +3139,7 @@
             إذن $\displaystyle \lim_{x \to +\infty} f(x) = 3$.
           </div>
         </div>
+        ${solutionStepsHTML(ex10Steps)}
       `);
       centerOn(8, 3.5, 20);
       function drawEx10() {
@@ -3017,6 +3155,7 @@
           renderMathInContainer();
         });
       }
+      initSolutionPanel(ex10Steps);
       bindCursor($('svg'));
       drawEx10();
       renderMathInContainer();
