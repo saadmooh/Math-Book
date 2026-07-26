@@ -292,6 +292,46 @@
     <p class="lead font-serif text-lg leading-loose">
       النهاية ليست قيمةً نحسبها بطريقة آلية، بل هي وصفٌ دقيقٌ لسلوك الدالة. عندما تتجه $x$ إلى $+\infty$ أو $-\infty$، فإننا ندرس "السلوك النهائي" للدالة. أحياناً نصطدم بأشكال بدئية لا تحمل معنى رياضياً مباشرة، تُسمى <strong>حالات عدم التعيين</strong>.
     </p>
+    <details class="card p-6 border-r-4 mt-6" style="border-right-color: var(--purple);" open>
+      <summary style="list-style: none; cursor: pointer;">
+        <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]" style="display: inline;">تذكير بالمهارات الجبرية</h3>
+        <span style="color: var(--orange); margin-inline-start: 0.5rem;">▼</span>
+      </summary>
+      <p class="font-serif text-base mb-4">قبل الشروع في حساب النهايات، تذكّر هذه الأدوات الجبرية التي سنستعملها في جميع الحلول القادمة:</p>
+      <ul class="space-y-3 font-serif text-base">
+        <li><strong>التحليل إلى عوامل:</strong> <span class="math-badge">$x^3 - 8 = (x-2)(x^2 + 2x + 4)$</span> (فرق مكعبين).</li>
+        <li><strong>الضرب بالمقترن:</strong> <span class="math-badge">$(\sqrt{x} - 2)(\sqrt{x} + 2) = x - 4$</span> للتخلص من الجذور.</li>
+        <li><strong>القسمة على أعلى قوة:</strong> <span class="math-badge">$\frac{3x^2 + 2x}{x^2 - 1} = \frac{3 + 2/x}{1 - 1/x^2}$</span> عند $x \to \pm\infty$.</li>
+        <li><strong>القسمة الإقليدية لكثيرات الحدود:</strong> عندما تكون درجة البسط أكبر من أو تساوي درجة المقام، نكتب الكسر على شكل: خارج القسمة $+$ باقٍ/مقام.</li>
+        <li><strong>فك القيمة المطلقة:</strong> <span class="math-badge">$|x| = x$ إذا $x \ge 0$، و $|x| = -x$ إذا $x < 0$</span> مع فصل الحالات.</li>
+      </ul>
+    </details>
+    <div class="card p-6 border-r-4 mt-6" style="border-right-color: var(--blue);">
+      <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">جدول العمليات المحدَّدة على النهايات</h3>
+      <p class="font-serif text-base mb-4">إذا كانت $\lim_{x \to a} f(x) = L$ و $\lim_{x \to a} g(x) = M$ حيث $L$ و $M$ عددان حقيقيان منتهيان، فإن النهاية تُحسب مباشرة وفق القواعد التالية:</p>
+      <div class="overflow-x-auto">
+        <table class="values-table">
+          <thead>
+            <tr><th>العملية</th><th>القاعدة</th><th>الشرط</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>المجموع</td><td>$\lim (f + g) = L + M$</td><td>—</td></tr>
+            <tr><td>الفرق</td><td>$\lim (f - g) = L - M$</td><td>—</td></tr>
+            <tr><td>الجداء</td><td>$\lim (f \times g) = L \times M$</td><td>—</td></tr>
+            <tr><td>الحاصل</td><td>$\lim (f / g) = L / M$</td><td>$M \neq 0$</td></tr>
+            <tr><td>عدد ثابت × دالة</td><td>$\lim (k \cdot f) = kL$</td><td>$k \in \mathbb{R}$</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="font-serif text-base mt-4 mb-3">وعندما تتجه إحدى الدالتين إلى اللانهاية، تبقى بعض العمليات محدَّدة:</p>
+      <div class="grid md:grid-cols-2 gap-3 font-serif text-base">
+        <span class="math-badge">$k + \infty = \infty$</span>
+        <span class="math-badge">$k \times \infty = \pm\infty$ (حسب إشارة $k$)</span>
+        <span class="math-badge">$\frac{L}{\infty} = 0$</span>
+        <span class="math-badge">$\frac{\infty}{L} = \pm\infty$ (حسب إشارة $L$)</span>
+      </div>
+      <p class="font-serif text-base mt-4"><strong>القاعدة الذهبية:</strong> عندما تعطينا هذه القواعد المباشرة عبارةً <strong>لا تحمل معنى رياضياً</strong>، فإننا نحصل على <strong>حالة عدم تعيين</strong> — وهذا موضوع البطاقة التالية.</p>
+    </div>
     <div class="card p-6 border-r-4 mt-6" style="border-right-color: var(--orange);">
       <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">1. حالات عدم التعيين الأربع</h3>
       <ul class="space-y-3 font-serif text-base">
@@ -300,6 +340,30 @@
         <li><span class="math-badge">$+\infty - \infty$</span> تتطلب التوحيد في الكتابة ثم الاختزال.</li>
         <li><span class="math-badge">$0 \times \infty$</span> نحوّلها إلى كسر لتصبح $\frac{0}{0}$ أو $\frac{\infty}{\infty}$.</li>
       </ul>
+    </div>
+    <div class="card p-6 border-r-4 mt-6" style="border-right-color: var(--green);">
+      <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">مثال محلول</h3>
+      <p class="font-serif text-base mb-3">احسب: $$\lim_{x \to +\infty} \frac{3x^2 + 2x}{x^2 - 1}$$</p>
+      <ol class="space-y-3 font-serif text-base list-none">
+        <li><span class="math-badge">الخطوة 1</span> التعويض المباشر يعطي $\frac{\infty}{\infty}$ — حالة عدم تعيين.</li>
+        <li><span class="math-badge">الخطوة 2</span> نقسم البسط والمقام على أعلى قوة وهي $x^2$:
+          $$\frac{3x^2 + 2x}{x^2 - 1} = \frac{3 + \frac{2}{x}}{1 - \frac{1}{x^2}}$$</li>
+        <li><span class="math-badge">الخطوة 3</span> من جدول العمليات: $\frac{2}{x} \to 0$ و $\frac{1}{x^2} \to 0$ عندما $x \to +\infty$.</li>
+        <li><span class="math-badge">النتيجة</span> $\displaystyle \lim_{x \to +\infty} \frac{3 + 2/x}{1 - 1/x^2} = \frac{3 + 0}{1 - 0} = 3$.</li>
+      </ol>
+    </div>
+    <div class="card p-6 border-r-4 mt-6" style="border-right-color: var(--navy);">
+      <h3 class="font-display font-bold text-lg mb-3 text-[var(--navy)]">لماذا يمكننا التعويض المباشر؟</h3>
+      <p class="font-serif text-base leading-relaxed mb-3">عندما نعوّض قيمة $a$ مكان $x$ مباشرة لحساب النهاية، فنحن لا نخمّن؛ بل نطبّق مبدأً دقيقاً هو <strong>الاتصال (Continuity)</strong>:</p>
+      <ul class="space-y-2 font-serif text-base mb-4">
+        <li>• كثيرات الحدود <strong>متصلة على $\mathbb{R}$ كله</strong>.</li>
+        <li>• الدوال الناطقة (الكسرية) <strong>متصلة على مجال تعريفها</strong>.</li>
+        <li>• دوال الجذور <strong>متصلة على مجال تعريفها</strong>.</li>
+      </ul>
+      <div class="bg-[var(--paper-cool)] p-3 font-mono text-center text-sm rounded border border-[rgba(10,30,63,0.1)]">
+        $$f \text{ متصلة عند } a \implies \lim_{x \to a} f(x) = f(a)$$
+      </div>
+      <p class="font-serif text-base mt-3">إذن التعويض المباشر صالح كلما كانت الدالة متصلة عند النقطة، وهذا ما يفسّر نجاحه في أغلب الحالات. <strong>سنستعمل هذه الحقيقة ضمنياً الآن، ونعود لصياغتها رسمياً في المقال 05 (الاتصال عند نقطة).</strong></p>
     </div>
     <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
   </section>
@@ -317,6 +381,17 @@
         <p class="text-sm text-[var(--ink-soft)] mb-3">نهاية دالة ناطقة عند $a$ تتطلب فحص البسط والمقام. إذا كانا صفرين معاً، نختزل العامل المشترك $(x-a)$.</p>
         <div class="bg-[var(--paper-cool)] p-3 font-mono text-center text-sm rounded border border-[rgba(10,30,63,0.1)]">
           $$\lim_{x \to a} \frac{P(x)}{Q(x)} = L \quad \text{إذا } P(a)=0, Q(a)=0$$         </div>
+      </div>
+      <div class="card p-6 border-r-4" style="border-right-color: var(--orange);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">مثال محلول</h3>
+        <p class="font-serif text-base mb-3">احسب: $$\lim_{x \to 2} \frac{x^3 - 8}{x - 2}$$</p>
+        <ol class="space-y-3 font-serif text-base list-none">
+          <li><span class="math-badge">الخطوة 1</span> التعويض المباشر: $\frac{2^3 - 8}{2 - 2} = \frac{0}{0}$ — حالة عدم تعيين (ثقب).</li>
+          <li><span class="math-badge">الخطوة 2</span> نحلّل البسط (فرق مكعبين): $x^3 - 8 = (x-2)(x^2 + 2x + 4)$.</li>
+          <li><span class="math-badge">الخطوة 3</span> نختزل العامل المشترك $(x-2)$ لأن $x \neq 2$:
+            $$\frac{(x-2)(x^2 + 2x + 4)}{x-2} = x^2 + 2x + 4$$</li>
+          <li><span class="math-badge">النتيجة</span> نعوّض الآن (الدالة متصلة): $\displaystyle \lim_{x \to 2} (x^2 + 2x + 4) = 4 + 4 + 4 = 12$.</li>
+        </ol>
       </div>
       <p>في هذه المرحلة، يمكنك تحريك النقطة الخضراء $a$ على المحور الأفقي لتختبر السلوك اللحظي، واستخدام خاصية التكبير لرؤية الثقوب والمقاربات العمودية بوضوح.</p>
     </div>
@@ -338,6 +413,28 @@
           $$\forall \epsilon > 0, \exists \delta > 0 : 0 < |x - a| < \delta \implies |f(x) - L| < \epsilon$$         </div>
         <p class="mt-4 text-sm text-[var(--ink-soft)]">في المختبر أدناه، أنت تتحكم في قيمة $\epsilon$ (الشريط الأزرق حول $L$). سيقوم المختبر تلقائياً بحساب أقصى قيمة لـ $\delta$ (الشريط البرتقالي حول $a$) تضمن بقاء المنحنى أسير الشريط الأزرق.</p>
       </div>
+      <div class="card p-6 border-r-4" style="border-right-color: var(--green);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">مثال محلول: برهان بالتعريف</h3>
+        <p class="font-serif text-base mb-3">أثبت بالتعريف أن: $$\lim_{x \to 3} (2x + 1) = 7$$</p>
+        <ol class="space-y-3 font-serif text-base list-none">
+          <li><span class="math-badge">الخطوة 1</span> نبسّط الفرق المستهدف: $|(2x+1) - 7| = |2x - 6| = 2|x - 3|$.</li>
+          <li><span class="math-badge">الخطوة 2</span> نريد $2|x - 3| < \epsilon$، أي $|x - 3| < \frac{\epsilon}{2}$.</li>
+          <li><span class="math-badge">الخطوة 3</span> لنعطَ $\epsilon > 0$ أيّاً كان؛ نختار $\delta = \frac{\epsilon}{2}$.</li>
+          <li><span class="math-badge">التحقق</span> إذا كان $0 < |x - 3| < \delta$ فإن $|(2x+1) - 7| = 2|x-3| < 2\delta = \epsilon$. ■</li>
+        </ol>
+      </div>
+      <div class="card p-6 border-r-4" style="border-right-color: var(--blue);">
+        <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">الربط بمبرهنة الحصر</h3>
+        <p class="font-serif text-base leading-relaxed mb-3">برهان مبرهنة الحصر (Sandwich) التي سنلقاها في المقال 04 هو في جوهره حجّة من نوع $\epsilon-\delta$:</p>
+        <ul class="space-y-2 font-serif text-base mb-3">
+          <li>• لنفترض أن $g(x) \le f(x) \le h(x)$ قرب $a$، وأن $\lim_{x \to a} g(x) = \lim_{x \to a} h(x) = L$.</li>
+          <li>• لنعطَ $\epsilon > 0$: بما أن $g \to L$ توجد $\delta_1$ تحقق $|g(x) - L| < \epsilon$، وبما أن $h \to L$ توجد $\delta_2$ تحقق $|h(x) - L| < \epsilon$.</li>
+          <li>• نختار $\delta = \min(\delta_1, \delta_2)$. عندئذ، إذا كان $0 < |x - a| < \delta$ فإن:
+            $$L - \epsilon < g(x) \le f(x) \le h(x) < L + \epsilon$$</li>
+          <li>• أي $|f(x) - L| < \epsilon$ — وهذا هو تعريف $\lim_{x \to a} f(x) = L$ بعينه. ■</li>
+        </ul>
+        <p class="font-serif text-base font-bold text-[var(--blue)]">هكذا يتضح أن $\epsilon-\delta$ ليس مجرد تعريف مجرد، بل هو المحرّك الذي تقوم عليه جميع مبرهنات النهايات.</p>
+      </div>
     </div>
     <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
   </section>
@@ -353,6 +450,16 @@
     <div class="card card-navy p-6 text-center mb-8">
       <div class="font-mono text-lg mb-2" style="color: var(--orange-bright);">$$\lim_{x \to a} v(u(x)) = \lim_{X \to b} v(X) = c$$</div>
       <p class="text-sm opacity-80">حيث $X$ وسيط يمثل قيمة $u(x)$ كلما اقترب $x$ من $a$.</p>
+    </div>
+
+    <div class="card p-6 border-r-4 mb-8" style="border-right-color: var(--warning);">
+      <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">تنبيه: شروط صحة تغيير المتغير</h3>
+      <p class="font-serif text-base leading-relaxed mb-3">صيغة تغيير المتغير أعلاه لا تكون صحيحة دائماً؛ إنما تكون صحيحة إذا تحقق <strong>أحد الشرطين</strong> التاليين:</p>
+      <ul class="space-y-2 font-serif text-base mb-3">
+        <li><strong>الشرط الأول:</strong> أن تكون $v$ <strong>متصلة عند $b$</strong>؛ وعندئذ $\lim_{x \to a} v(u(x)) = v(b)$ مباشرة.</li>
+        <li><strong>الشرط الثاني:</strong> أن يكون $u(x) \neq b$ في <strong>جوار مثقوب</strong> للنقطة $a$ (أي في جوار $a$ ما عدا النقطة $a$ نفسها ربما).</li>
+      </ul>
+      <p class="font-serif text-base">بدون أحد هذين الشرطين قد تفشل الصيغة. <strong>مثال مضاد:</strong> إذا كانت $u(x) = b$ دالةً ثابتة، وكان لدى $v$ ثقب عند $b$ (نهايتها $c$ لكنها غير معرّفة عند $b$ أو تساوي قيمةً أخرى)، فإن $v(u(x))$ ثابتة تساوي $v(b)$، وقد لا تتفق مع $\lim_{X \to b} v(X) = c$.</p>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 mt-8">
@@ -377,6 +484,27 @@
           </li>
         </ul>
       </div>
+    </div>
+
+    <div class="card p-6 border-r-4 mt-8" style="border-right-color: var(--warning);">
+      <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">تنبيه هام حول مبرهنات المقارنة</h3>
+      <p class="font-serif text-base leading-relaxed mb-3">إذا كانت $f(x) \ge g(x)$ قرب $a$ وكانت $\lim_{x \to a} g(x) = L$ عدداً <strong>منتهياً</strong>، فهذا <strong>لا يخبرنا بشيء عن نهاية $f$</strong>؛ كل ما نستنتجه هو أن $f(x)$ محدودة من الأسفل بقيم قريبة من $L$، وقد تتجه $f$ إلى أي قيمة أكبر منها أو حتى إلى $+\infty$.</p>
+      <ul class="space-y-2 font-serif text-base">
+        <li>• مبرهنات المقارنة تكون مفيدة <strong>فقط عندما يتجه أحد الطرفين إلى $\pm\infty$</strong> (التكبير أو التصغير).</li>
+        <li>• إذا كان الطرفان منتهيين، فيجب استعمال <strong>مبرهنة الحصر</strong>، ويشترط فيها تساوي الحدين: $\lim g(x) = \lim h(x) = L$.</li>
+      </ul>
+    </div>
+
+    <div class="card p-6 border-r-4 mt-8" style="border-right-color: var(--green);">
+      <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">مثال محلول: حصر دالة مذبذبة</h3>
+      <p class="font-serif text-base mb-3">احسب: $$\lim_{x \to 0} x \sin\left(\frac{1}{x}\right)$$</p>
+      <ol class="space-y-3 font-serif text-base list-none">
+        <li><span class="math-badge">الخطوة 1</span> التعويض المباشر مستحيل: $\sin(1/x)$ تتذبذب بلا توقف عند $x \to 0$ ولا نهاية لها.</li>
+        <li><span class="math-badge">الخطوة 2</span> نستعين بالمحصورية: لكل $x \neq 0$ لدينا $-1 \le \sin(1/x) \le 1$.</li>
+        <li><span class="math-badge">الخطوة 3</span> بضرب المتباينة في $|x|$: $-|x| \le x \sin(1/x) \le |x|$.</li>
+        <li><span class="math-badge">الخطوة 4</span> بما أن $\lim_{x \to 0} (-|x|) = \lim_{x \to 0} |x| = 0$، فبمبرهنة الحصر: $\displaystyle \lim_{x \to 0} x \sin\left(\frac{1}{x}\right) = 0$.</li>
+      </ol>
+      <p class="font-serif text-sm mt-3 text-[var(--ink-soft)]">الفكرة الجوهرية: التذبذب وحده لا يمنع وجود النهاية إذا كانت <strong>سعة التذبذب تضمحل</strong> نحو الصفر.</p>
     </div>
     <div class="editorial-rule mt-12"><span class="symbol">∞</span></div>
   </section>
@@ -405,6 +533,18 @@
         <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">4. مقارب عمودي</h3>
         <p class="font-serif text-sm">الدالة تتجه إلى ∞ أو -∞، فالنهاية غير موجودة.</p>
       </div>
+    </div>
+    <div class="card p-6 border-r-4 mt-8" style="border-right-color: var(--green);">
+      <h3 class="font-display font-bold text-base mb-2 text-[var(--navy)]">مثال محلول: ثقب قابل للإزالة</h3>
+      <p class="font-serif text-base mb-3">دَرِسْ اتصال الدالة: $$f(x) = \frac{x^2 - 4}{x - 2}$$ عند $x = 2$.</p>
+      <ol class="space-y-3 font-serif text-base list-none">
+        <li><span class="math-badge">الخطوة 1</span> التعويض المباشر: $\frac{2^2 - 4}{2 - 2} = \frac{0}{0}$ — الدالة غير معرّفة أصلاً عند $x=2$.</li>
+        <li><span class="math-badge">الخطوة 2</span> نحلّل البسط (فرق مربعين): $x^2 - 4 = (x-2)(x+2)$.</li>
+        <li><span class="math-badge">الخطوة 3</span> نختزل العامل المشترك $(x-2)$ لأن $x \neq 2$:
+          $$\frac{(x-2)(x+2)}{x-2} = x + 2$$</li>
+        <li><span class="math-badge">الخطوة 4</span> نحسب النهاية: $\displaystyle \lim_{x \to 2} (x+2) = 4$.</li>
+        <li><span class="math-badge">الخطوة 5</span> بما أن $f(2)$ غير معرّفة، فإن $x=2$ <strong>ثقب قابل للإزالة</strong>. لجعل الدالة متصلة عند $2$ نعيد تعريف $f(2) = 4$.</li>
+      </ol>
     </div>
     <div class="editorial-rule mt-12"><span class="symbol">§</span></div>
   </section>
@@ -507,6 +647,62 @@
 </section>
 <div id="lab-container-ex10" class="my-12"></div>
 
+<section class="prose-section" id="decision-map">
+  <h2 class="section-title">
+    <span class="num">خارطة قرار</span>كيف تحل أي تمرين نهايات؟
+  </h2>
+  <p class="font-serif text-lg leading-loose mb-6">
+    اتبع هذه الخطوات التسلسلية عند مواجهة أي تمرين نهايات. الخطوة الأولى دائماً هي <strong>التعويض المباشر</strong>، ثم تُحلّل الصيغة الناتجة لتحديد الأسلوب المناسب.
+  </p>
+
+  <div class="card p-6">
+    <div class="space-y-4">
+      <div class="flex items-center gap-4 p-4 bg-[var(--paper-cool)] border border-[rgba(10,30,63,0.15)]">
+        <div class="w-10 h-10 rounded-full bg-[var(--navy)] text-[var(--paper-warm)] flex items-center justify-center font-mono font-bold">1</div>
+        <div>
+          <div class="font-display font-bold text-[var(--navy)]">التعويض المباشر</div>
+          <p class="font-serif text-sm text-[var(--ink-soft)] m-0">عوّض بـ $x = a$ (أو $x \to \pm\infty$) وانظر ما تُنتج الصيغة.</p>
+        </div>
+      </div>
+
+      <div class="text-center text-2xl" style="color: var(--orange);">↓</div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-4 bg-[var(--green-soft)] text-[var(--paper-warm)] border border-[var(--green)]">
+          <div class="font-display font-bold">عدد حقيقي</div>
+          <p class="font-serif text-sm m-0">النهاية = ذلك العدد. (صحيح طالما الدالة متصلة عند النقطة).</p>
+        </div>
+        <div class="p-4 bg-[var(--orange-soft)] text-[var(--paper-warm)] border border-[var(--orange)]">
+          <div class="font-display font-bold">صيغة غير معرّفة</div>
+          <p class="font-serif text-sm m-0">حدّد نوعها وطبّق الأسلوب المناسب من البطاقات التالية.</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-3">
+        <div class="card p-4 border-r-4" style="border-right-color: var(--purple);">
+          <div class="font-display font-bold text-sm text-[var(--navy)] mb-2">$\frac{0}{0}$ أو $\frac{\infty}{\infty}$</div>
+          <p class="font-serif text-sm text-[var(--ink-soft)] m-0">حلّل إلى عوامل، اضرب بالمقترن، اقسم على أعلى قوة، أو استخدم قاعدة لوبيتال.</p>
+        </div>
+        <div class="card p-4 border-r-4" style="border-right-color: var(--blue);">
+          <div class="font-display font-bold text-sm text-[var(--navy)] mb-2">$\infty - \infty$ أو $0 \times \infty$</div>
+          <p class="font-serif text-sm text-[var(--ink-soft)] m-0">وحّد الكسرات في حالة الجمع/الطرح، أو اكتبها على صورة كسر واحد.</p>
+        </div>
+        <div class="card p-4 border-r-4" style="border-right-color: var(--warning);">
+          <div class="font-display font-bold text-sm text-[var(--navy)] mb-2">تذبذب / قفزة / |x|</div>
+          <p class="font-serif text-sm text-[var(--ink-soft)] m-0">استخدم مبرهنة الحصر للتذبذب، وافحص النهايتين اليسرى واليمنى للقفزات وفصل $|x|$.</p>
+        </div>
+      </div>
+
+      <div class="text-center text-2xl" style="color: var(--orange);">↓</div>
+
+      <div class="p-4 bg-[var(--navy)] text-[var(--paper-warm)] text-center">
+        <p class="font-serif text-base m-0">
+          <strong>القاعدة الذهبية:</strong> بعد كل تبسيط، عُد إلى الخطوة 1 (التعويض المباشر) حتى تحصل على قيمة عددية.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
